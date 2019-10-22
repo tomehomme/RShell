@@ -26,3 +26,15 @@ Note: inheritance is denoted by indentation
 ## Prototypes/Research
 
 ## Development and Testing Roadmap
+
+| Week | Issue                                            | Person |
+|------|--------------------------------------------------|--------|
+| 1    | Create RBase class and pure virtual functions    | Ajeet  |
+| 1    | Create basic main interface                      | Paris  |
+| 2    | Create ADTs (Args, Connector, Executable)        | Ajeet  |
+| 3    | Create ExecBase class and pure virtual functions | Paris  |
+| 4    | Create ExecObj class and functions               | Ajeet  |
+| 5    | Create unit tests for ExecHandler functions      | Paris  |
+| 5    | Create ExecHandler and functions                 | Ajeet  |
+| 6    | Create unit tests for ExecObj functions          | Paris  |
+| 6    | Create integration tests                         | Ajeet  |
