@@ -13,7 +13,6 @@ void parentProcess();
 // for testing fork(),waitpid(),execvp()
 int main(int argc, char** argv){
     // argv end with NULL
-   //char* args[] = {"/bin/ls", "-l", "/u/userid/dirname", NULL};
     pid_t pid;
     int status;
 
@@ -41,7 +40,6 @@ int main(int argc, char** argv){
              printf("wait");
          }
         parentProcess();
-        execvp("echo \"hello\"", argv);
         cout << "Parent process finished" << endl;
     }
     return 0;
