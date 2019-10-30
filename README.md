@@ -24,6 +24,7 @@ Note: inheritance is denoted by indentation
 
 
 ## Prototypes/Research
+### System call research
 - fork() creates a new process (child) that runs the same code as the parent process after the fork instruction executes.
   - fork returns a value. 0 means that the child process is running; -1 means the child process failed to create
   - to allow the child to run a different set of instructions, we can use execvp()
@@ -32,11 +33,38 @@ Note: inheritance is denoted by indentation
   - this allows us to call fork(), and then ensure that the child process completes its execution before resuming the parent process.
   - waitpid(pid_t pid, int* status, int options) execution of the calling process (usually parent) is stalled until a child specified by pid argument has changed state (status)
 - in our prototype, we called fork() to create a new process. We checked to see which process was running using the fork return type. Then, we called execvp() to make the child process run the ls shell command. We used waitpid() to allow the child process to execute and complete before resuming our parent process, which was a simple counter.
+### Parse function research
 
-## Parse function protoype usage
+### General shell research
+#### Connectors
+##### Connector types
+```
+//Will run the first command then the second, unconditionally:
+command1 ; command2  
+//Will run the first command then the second, if command1 has no errors:
+command1 && command2  
+//Will run the second command only if the first fails:
+command1 || command2  
+//Will run the command in the background:
+command1 & 
+```
+
+##### Connector order of operations
+We must choose what the program should do when it encounters chains of connectors. Ie, connectors must have a set order of operations. We looked to the bash shell for inspiration.
+
+According to the bash man page:
+```
+Of these list operators, ‘&&’ and ‘||’ have equal precedence, followed by ‘;’ and ‘&’, which have equal precedence.
+```
+
+We have decided to model our shell in the same way.
+
+
+## Parse function protoype usage / explanation
 Compile prototype/shellproto.cpp using g++ and c++ 11.
 Running the resulting executable will bring you to the shell.
-
+The parse method protoype utilizes stringstream to break up the user input (from getline) into space delimited strings.
+The first string is the executible to run, while the rest of the strings are arguments to be sent to the executible.
 ## Development and Testing Roadmap
 
 | Week | Issue                                            | Person |
