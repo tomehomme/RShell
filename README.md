@@ -9,7 +9,7 @@ RShell is a C++ Command shell which can print a command prompt, chain commands u
 We will develop using the Kanban development pattern. Inputs are ingested through the ExecObject parse method that builds a vector of RBase pointers, representing the user’s argumentlist, connector, and executable. This vector is then passed to the ExecHandler class which handles the system calls. 
 
 ## Diagram
-![OMT Diagram](https://raw.githubusercontent.com/cs100/assignment-pajeet/master/images/omt%20diagram.png?token=AKOKJPNWXCFBPAACU3QGEJC5XCO6Y)
+![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/master/images/omt%20diagram.png?raw=true)
 ## Classes
 
 - RBase: base class with pure virtual parse function
