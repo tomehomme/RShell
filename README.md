@@ -33,7 +33,7 @@ Note: inheritance is denoted by indentation
   - waitpid(pid_t pid, int* status, int options) execution of the calling process (usually parent) is stalled until a child specified by pid argument has changed state (status)
 - in our prototype, we called fork() to create a new process. We checked to see which process was running using the fork return type. Then, we called execvp() to make the child process run the ls shell command. We used waitpid() to allow the child process to execute and complete before resuming our parent process, which was a simple counter.
 
-# Parse function protoype usage
+## Parse function protoype usage
 Compile shellproto.cpp using gcc and c++ 11.
 Running the resulting executable will bring you to the shell.
 
