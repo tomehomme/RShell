@@ -35,7 +35,6 @@ Note: inheritance is denoted by indentation
 - in our prototype, we called fork() to create a new process. We checked to see which process was running using the fork return type. Then, we called execvp() to make the child process run the ls shell command. We used waitpid() to allow the child process to execute and complete before resuming our parent process, which was a simple counter.
 ### Parse function research
 
-### General shell research
 #### Connectors
 ##### Connector types
 ```
