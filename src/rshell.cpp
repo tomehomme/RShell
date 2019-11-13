@@ -3,25 +3,27 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
-#include <sys/wait.h>
+ #include <sys/wait.h>
 #include <vector>
 #include <string>
 #include <sstream>
 #include "Command.cpp"
+
+#include "And.cpp"
+#include "Or.cpp"
+#include "Semi.cpp"
+
 #include "Executer.cpp"
-
-
 
 int main(){
     string inputs;
     cout << "$ ";
-   // getline(inputs);
    cout << "creating executer:" << endl;
-    Executer* execute = new Executer("ls");
+    Executer* execute = new Executer("echo hello");
    cout << "finished creating executer" << endl;
-	cout << "begining executer Run()" << endl;
- execute->Run();
-	cout << "finished run. " <<endl;
+	cout << "begining executer execute()" << endl;
+    execute->execute();
+	cout << "finished execute. " <<endl;
     return 0;
 }
 
@@ -76,4 +78,4 @@ stringstream buffer;
         cout << endl << endl;
     }
 
-   * /
+   */

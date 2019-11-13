@@ -10,7 +10,7 @@ class RBase{
     public:
         virtual void parse(std::string ) = 0;
       	std::string executable;
-      	bool  execute() = 0;
-      	char** args[MAX_ARGS];
+      	virtual	bool execute() = 0;
+      	char* args[MAX_ARGS];
 };
 #endif // __RBASE_H__

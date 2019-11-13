@@ -7,9 +7,9 @@
 class Or : public Connector{
   public:
     //RBase* left, RBase* right
-   Or(RBase* left, RBase* right):Connector(left,right);
+      Or(RBase* left, RBase* right):Connector(left,right){}
        virtual bool execute();
-       
-    };
+      virtual void parse(string); 
+};
    
 #endif

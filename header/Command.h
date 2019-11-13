@@ -3,17 +3,15 @@
 #include <vector>
 #include <string>
 #include "RBase.h"
+
 class Command : public RBase{
     protected:
-        std::string executiable;
-        bool failed;
-        bool followedByAND;
-        bool followedByOR;
-        char** args[MAX_ARGS]; 
+        std::string executable;
+        char* args[MAX_ARGS]; 
     public:
         //splits up input by quotes and space 
         //to populate the executable name and an array of arguments.
-        virtual bool  Run(); 
+        virtual bool  execute(); 
         virtual void parse(std::string toParse);
         Command(std::string com);
 };      

@@ -7,10 +7,10 @@
 class Semi : public Connector{
   public:
     
-   Semi(RBase* left, RBase* right):Connector(left,right);
+   Semi(RBase* left, RBase* right):Connector(left,right){}
        virtual bool execute();
-       
-    };
-   
+	virtual void parse(string);       
+};
+  
 #endif
 
