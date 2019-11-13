@@ -3,10 +3,40 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string_regex.hpp>
 #include <boost/regex.hpp>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <iostream>
+#include <sys/wait.h>
 //#include "../header/RBase.h"
 #include "../header/Command.h"
 
+
+
 void Command::parse(std::string toParse){
+    vector<string> parsed;
+    vector<char*> arguments;
+    //vector parsed holds all the arguments
+    boost::algorithm::split_regex(parsed, toParse, boost::regex(" (?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+    for(string par : parsed){
+        char * charCopy = new char [par.length()+1];
+        strcpy (charCopy, par.c_str());
+        arguments.push_back(charCopy);
+        //cout << par;
+    }
+    for(char* cha : arguments){
+        cout << cha<<endl;
+    }
+    for (unsigned i = 0; i < arguments.size(); i++) {
+        this->args[i] = arguments.at(i);
+    }
+    this->args[arguments.size()] = NULL;
+    // char** arg2= new char*[parsed.size()+1] ;
+    // arg2 = this->args;
+    // this->args[parsed.size()] = NULL;
+    // for (unsigned i = 0; i < arguments.size(); i++) {
+    //     this->args[i] = arguments.at(i);
+    // }
 	//FIX ME AFTER PARSING FUNCTION IS DONE..
 
 	// vector<char*> arguments;
@@ -21,25 +51,23 @@ void Command::parse(std::string toParse){
 
     // test command..
     // casting string into a char*, or error will occur
-   char* cmd = (char*)toParse.c_str();
+//    char* cmd = (char*)toParse.c_str();
     //	char* cmd = (char*)"echo";
     //	char* echoHello = (char*)"Hello";
-    vector<char*> arguments;
-    arguments.push_back(cmd);
+    //vector<char*> arguments;
+    //arguments.push_back(cmd);
 //	arguments.push_back(echoHello);
-   for (int i = 0; i < arguments.size(); i++){
- 	  this->args[i] = arguments.at(i);
-}
+
  //   this->args[0] = arguments.at(0);
 //	this->args[1] = arguments.at(1);
 	//NULL terminate..
-    this->args[arguments.size()] = NULL;
+    // this->args[arguments.size()] = NULL;
 }
 
 
 Command::Command(std::string com){
     this->executable = com;
-    parse(executable); 
+    parse(com); 
 }
 
 bool Command::execute(){

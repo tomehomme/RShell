@@ -8,6 +8,8 @@ class And : public Connector{
   public:
     //RBase* left, RBase* right
     And(RBase* left, RBase* right);
+    And();
+
     virtual bool execute();
     virtual void parse(string); 
 };

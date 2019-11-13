@@ -11,8 +11,6 @@
 
 #include "And.cpp"
 #include "Or.cpp"
-#include "Semi.cpp"
-
 #include "Executer.cpp"
 
 int main(){
@@ -20,10 +18,10 @@ int main(){
     cout << "$ ";
   // cout << "creating executer:" << endl;
   // I WILL UPDATE WHEN PARSING FUNCITON COMPLETE
-    Executer* execute = new Executer("");
+    Executer* execute = new Executer("echo hello35 && git status2 || echo ugotthis");
  //  cout << "finished creating executer" << endl;
 //	cout << "begining executer execute()" << endl;
-    execute->execute();
+    //execute->execute();
 	//cout << "finished execute. " <<endl;
     return 0;
 }

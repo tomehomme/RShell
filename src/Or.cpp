@@ -8,6 +8,9 @@
 
 void Or::parse(string s){}
 
+Or::Or(){
+
+}
 bool Or::execute(){
     //executes second statement only if the first one fails
     if(!this->left->execute()){

@@ -6,7 +6,16 @@
 //#include "../header/RBase.h"
 #include "../header/And.h"
 
-And::And(RBase* left, RBase* right):Connector(left,right){}
+And::And(RBase* left, RBase* right):Connector(left,right){
+
+    
+}
+
+
+
+And::And(){
+
+}
 
 void And::parse(string s){}
 
