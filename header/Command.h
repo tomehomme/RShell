@@ -14,9 +14,7 @@ class Command : public RBase{
         //splits up input by quotes and space 
         //to populate the executable name and an array of arguments.
         
-        virtual void parse(std::string toParse){
-        };
-        Command(std::string com){
-        };
+        virtual void parse(std::string toParse);
+        Command(std::string com);
 };      
-#endif __COMMAND_H__
+#endif 

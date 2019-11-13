@@ -5,4 +5,4 @@ class RBase{
     public:
         virtual void parse(std::string ) = 0;
 };
-#endif __RBASE_H__
+#endif

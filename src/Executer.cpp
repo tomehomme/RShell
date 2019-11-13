@@ -29,3 +29,8 @@ void Executer::parse(std::string toParse){
 void Run(){
 
 }
+
+int main(){
+    Executer * test = new Executer("git push; git pull; echo test");
+    
+}
