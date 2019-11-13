@@ -5,18 +5,16 @@
 #include "RBase.h"
 class Command : public RBase{
     protected:
-        std::string executable;
+        std::string executiable;
         bool failed;
         bool followedByAND;
         bool followedByOR;
-        char* args[]; 
+        char** args[MAX_ARGS]; 
     public:
         //splits up input by quotes and space 
         //to populate the executable name and an array of arguments.
-        
-        virtual void parse(std::string toParse){
-        };
-        Command(std::string com){
-        };
+        virtual bool  Run(); 
+        virtual void parse(std::string toParse);
+        Command(std::string com);
 };      
-#endif __COMMAND_H__
+#endif // __COMMAND_H__

@@ -1,0 +1,19 @@
+#ifndef __CONNECTOR_H__
+#define __CONNECTOR_H__
+
+
+#include "RBase.h"
+
+class Connector : public RBase{
+  public:
+    RBase* left;
+    RBase* right;
+    Connector(RBase* left, RBase* right){this->left = left; this->right = right;}
+    virtual bool execute() = 0;
+
+};
+
+
+
+
+#endif
