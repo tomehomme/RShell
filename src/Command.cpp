@@ -21,6 +21,7 @@ void Command::parse(std::string toParse){
 
     // test command..
     // casting string into a char*, or error will occur
+    // using a C-style cast (char*).. or can use const_cast<char*>()
    char* cmd = (char*)toParse.c_str();
     //	char* cmd = (char*)"echo";
     //	char* echoHello = (char*)"Hello";
@@ -60,10 +61,11 @@ bool Command::execute(){
     // Child process, calls execvp()
     if (pid == 0) {
         //args[0] is the command
-            execvp(args[0], args);
-            //if returns, then this means somehting failed
+            if (execvp(args[0], args)== -1){
+            //if returns, then this means somehting failed, maybe not a real command
             perror("execvp");
-            exit(1);
+            return false;
+	}
     }
     if (pid > 0){ //parent
         pid_t w = waitpid(pid, &status, 0);
