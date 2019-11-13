@@ -11,7 +11,7 @@ And::And(RBase* left, RBase* right):Connector(left,right){}
 void And::parse(string s){}
 
 bool And::execute(){
-    cout << "We are in AND" << endl;
+    //cout << "We are in AND" << endl;
     //executes second statement only if the first one passes
     if(!this->left->execute()){
         return false;

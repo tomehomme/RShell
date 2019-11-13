@@ -33,16 +33,16 @@ void Executer::parse(std::string toParse){
  //AND TEST.. DELETE LATER
  RBase* ls = new Command("ls");
  RBase* echo = new Command("echo");
-   RBase*  echoHello = new Semi(ls, echo);
-  commandList.push_back(echoHello);
-   cout << "finished parsing" << endl;
+   RBase*  test = new Semi(ls, echo);
+  commandList.push_back(test);
+   commandList.push_back(new Command("\0"));
 }
 
 
 bool Executer:: execute(){
   bool success = true;
   for (int i = 0; i < commandList.size(); i++){
-	cout << "executing" << endl;
+//	cout << "executing" << endl;
     this->commandList.at(i)->execute();
   }
  return success;

@@ -7,6 +7,8 @@
 #include "../header/Command.h"
 
 void Command::parse(std::string toParse){
+	//FIX ME AFTER PARSING FUNCTION IS DONE..
+
 	// vector<char*> arguments;
     // arguments.push_back(&toParse[0]);
     // char** args = new char*[arguments.size()+1];
@@ -18,9 +20,10 @@ void Command::parse(std::string toParse){
     // args[0] = &toParse[0];
 
     // test command..
+    // casting string into a char*, or error will occur
    char* cmd = (char*)toParse.c_str();
-//	char* cmd = (char*)"echo";
-//	char* echoHello = (char*)"Hello";
+    //	char* cmd = (char*)"echo";
+    //	char* echoHello = (char*)"Hello";
     vector<char*> arguments;
     arguments.push_back(cmd);
 //	arguments.push_back(echoHello);
@@ -40,10 +43,10 @@ Command::Command(std::string com){
 }
 
 bool Command::execute(){
-   cout << "we are in command execute fcn" << endl;
+  // cout << "we are in command execute fcn" << endl;
     if (*args[0] == '\0'){cout << "exit.." <<endl;exit(1);}	
 
-    //convert input into char*[]
+    //convert input into char*[] for execvp(args[0],args)
 
     pid_t pid = fork();  //child process. fork returns pid_t of process
     int status;  //to see when status changes      
@@ -64,11 +67,14 @@ bool Command::execute(){
     }
     if (pid > 0){ //parent
         pid_t w = waitpid(pid, &status, 0);
-        if (status > 0){
-            //execvp has failed here.. return false for fail
+	//wait pid suspends execution, in this case parent, until children terminates.
+	//"returns the process id of child whose state has changed"
+        if (w == 0){
+	    //process id of child has not changed state
             return false;
         }
-        else if (w == 1){
+        else if (w == -1){
+		perror("waitpid");
             //failed at execution, false
             return false;
         }
