@@ -6,19 +6,19 @@
 ## Intro 
 RShell is a C++ Command shell which can print a command prompt, chain commands using connectors and create multiple threads using system calls.
 
-We will develop using the Kanban development pattern. Our project will utilize a Composite Design pattern. In our composite, our base class is called RBase. Using RBase class, each subsequent inheriting class will be able to access our input and parse function. Inputs are ingested through the ExecObject parse method that builds a vector of RBase pointers, representing the user’s argumentlist, connector, and executable. This vector of RBase pointers is then passed to the ExecHandler class which handles the system calls. 
+Our project will utilize a Composite Design pattern. In our composite, our base class is called RBase. Using RBase class, each subsequent inheriting class will be able to access our input(string executable), parse and execute function. Inputs are ingested through the Executer, which then calls its parse method that builds a vector of RBase pointers called commandList, representing the user’s inputted commands. Then, our execute function will then be called on this Executer class, which uses recursive composition to then call each RBase's execute function in the vector. The RBase is a pure virtual class, and the user's commands are actually being represented and carried through our leaf class, Command. The Command class calls it's execute function and returns true or false depending on whether the command was successfully executed. Connectors (&&, ||, ;) is represented by our class Connector, which also inherits from RBase and uses Command to carry out functionality.
 
 ## Diagram
-![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/master/images/omt%20diagram.png?raw=true)
+![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/tomehomme/execution/images/omt%20diagram.png?raw=true)
 ## Classes
 
-- RBase: composite base class with pure virtual parse function
-  - ExecBase: base class for ExecObj and ExecHandler to interact after parsing the string input. ExecHandler uses the ExecBase class pointer to take in an ExecObject
-    - ExecObj: Executes the Parse function, which generates a vector of RBases to create an object representation of a command from a string input. We can represent the entirety of the user’s string input as vector of the ADTs listed below after parsing. ExecObj will then pass this information(vector) onto ExecHandler
-    - ExecHandler: Handles multithreading and system calls, takes in an ExecObject and executes it.
-  - Args: ADT for storing Arguments from string input. Is used in ExecBase vector<RBase*>objects.
-  - Connector: ADT for storing connectors. Is used in ExecBase vector<RBase*>objects.
-  - Executable: ADT for storing the part of the command that is executable. Is used in ExecBase vector<RBase*>objects.
+- RBase: composite base class with pure virtual parse function and pure virtual execute function. Used to allow for the inherited classes to interact and use each other's functions. Allows for our composite function to use recursive composition.
+  - Executer: Contains a vector of RBase pointers. When calling execute, this class will loop through the vector and call every RBase pointers in the vector's execute functions. This will represent calling the functions from left to right.
+  - Command: Is the actual "leaf" in the composite class. Will do the actual execution of the user's commands and returns true if the execution was successful, and false if the execution of the command was not. Calls fork, waitpid, and execvp in order to carry out the system calls.
+  - Connector: Base class for the && || ; commands. Has an RBase* left and RBase* right that allows for the connectors to function how they are meant to.
+    - And: Inherited from Connector. Handles the && command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and passes.
+    - Or: Inherited from Connector. Handles the || command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and fails. 
+    - Semi: Inherited from Connector. Handles the ; command. Always executes the second comamnd (RBase* right) even if the first command (RBase* left) executes and fails 
 
 Note: inheritance is denoted by indentation
 
@@ -70,10 +70,11 @@ The first string is the executible to run, while the rest of the strings are arg
 |------|--------------------------------------------------|--------|
 | 1    | Create RBase class and pure virtual functions    | Ajeet  |
 | 1    | Create basic main interface                      | Paris  |
-| 2    | Create ADTs (Args, Connector, Executable)        | Ajeet  |
-| 3    | Create ExecBase class and pure virtual functions | Paris  |
-| 4    | Create ExecObj class and functions               | Ajeet  |
-| 5    | Create unit tests for ExecHandler functions      | Paris  |
-| 5    | Create ExecHandler and functions                 | Ajeet  |
-| 6    | Create unit tests for ExecObj functions          | Paris  |
+| 2    | Create all program classes                       | Paris  |
+| 3    | Create parser function                           | Ajeet  |
+| 3    | Create Unit Tests                                | Ajeet  |
+| 3    | Create Integration Tests                         | Paris  |
+| 5    | Add in more parsing capabilities                 | Ajeet  |
+| 5    | Create more classes to encompass new enchantments| Paris  |
+| 6    | Create unit tests for new functions              | Paris  |
 | 6    | Create integration tests                         | Ajeet  |

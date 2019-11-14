@@ -37,6 +37,11 @@ test
 # CMake Temp Files
 CMakeCache.txt
 CMakeFiles
+
 Makefile
 cmake_install.cmake
+
+
+.vscode/
+
 

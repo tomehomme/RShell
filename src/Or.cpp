@@ -18,6 +18,6 @@ bool Or::execute(){
     }
     //if first command passes, do not execute the second one.
     else{
-        return false;
+        return true;
     }
 }

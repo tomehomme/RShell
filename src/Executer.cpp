@@ -186,15 +186,13 @@ cout <<"test" << endl;
   //   }
   // }
 
-  
-}
 
-bool Executer::execute(){
+bool Executer:: execute(){
   bool success = true;
-  for (int i = 0; i < commandList.size(); i++){
+//  for (int i = 0; i < commandList.size(); i++){
 //	cout << "executing" << endl;
-    this->commandList.at(i)->execute();
-  }
+//    this->commandList.at(i)->execute();
+ // }
  return success;
 }
 

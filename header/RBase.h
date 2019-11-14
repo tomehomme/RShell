@@ -13,4 +13,5 @@ class RBase{
       	virtual	bool execute() = 0;
       	char* args[MAX_ARGS];
 };
+
 #endif // __RBASE_H__

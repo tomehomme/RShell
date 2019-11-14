@@ -1,0 +1,1 @@
+ls -a && echo b || mkdir test; git status

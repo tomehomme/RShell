@@ -13,6 +13,7 @@ class Executer : public RBase{
         //passes result to new Command and sets the appropriate bool flag if it is to the left of a connector. 
         //It then stores the new Command into commandList.
         virtual void parse(std::string toParse);
+
         virtual bool execute();
 };
 #endif // __EXECUTER_H__
