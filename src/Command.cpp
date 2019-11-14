@@ -72,12 +72,16 @@ void Command::parse(std::string toParse){
         }
        
     }
-    cout << "num spaces:" << num_spaces << endl;
+    //cout << "num spaces:" << num_spaces << endl;
     this->args[arguments.size()-num_spaces] = NULL;
 }
 
 bool Command::execute() {
 parse(this->executable);
+if (args[0]==NULL){
+  //no arg
+  return true;
+}
 //cout << args[0] << endl;
 //// cout << "we are in command execute fcn" << endl;
   if ( string(args[0]) == "exit" || string(args[0]) == "\0") {
@@ -110,15 +114,15 @@ parse(this->executable);
     //"returns the process id of child whose state has changed"
     if (status == 0) {
       //process id of child has not changed state
-      //perror("waitpid");
+     // perror("waitpid");
       return true; //used to be false
     } else if (status == -1) {
       perror("waitpid");
       //also shows unknown command if status -1
       return false;
     } else {
-      perror("cmd");
-      return false;
+      //failed somewhere -- for ex mkdir on a place where the folder already exists
+        return false;
     }
   }
   //forking failed or something went wrong.
