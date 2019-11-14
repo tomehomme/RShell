@@ -9,6 +9,7 @@ class Executer : public RBase{
     public:
         std::vector<RBase *> commandList;
         Executer(std::string);
+      
         //Takes in user input, splits by ';' , "&&" and "||" to get seperate commands, 
         //passes result to new Command and sets the appropriate bool flag if it is to the left of a connector. 
         //It then stores the new Command into commandList.

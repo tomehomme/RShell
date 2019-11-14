@@ -24,6 +24,12 @@ Command::Command(std::string com) {
 
 void Command::parse(std::string toParse){
 //cout << "COMMAND PARSE CLASS" << endl;
+
+  //delete white space
+  while (toParse[0] == ' '){
+    toParse = toParse.substr(1,toParse.size());
+    //cout << toParse << endl;
+  }
     vector<string> parsed;
     vector<char*> arguments;
     //vector parsed holds all the arguments
@@ -37,13 +43,25 @@ void Command::parse(std::string toParse){
    // for(char* cha : arguments){
      //   cout << cha<<endl;
    // }
+
+   //remove space??
+   int num_spaces = 0;
+   //if (arguments.at(i)[0] == ' ') { cout << " found space.. " << endl; i++;}
     for (unsigned i = 0; i < arguments.size(); i++) {
-	if (arguments.at(i)[0] == '#'){
-		break;	
-	}
-        this->args[i] = arguments.at(i);
+     // cout << "arg;"<<arguments.at(i);
+    	if (arguments.at(i)[0] == '#'){
+    		break;	
+    	}
+      else if (string(arguments.at(i)) == "\0"){
+          num_spaces++;
+        }
+       else if (arguments.at(i)[0] != '\0'){ //remove spaces
+          this->args[i] = arguments.at(i);
+        }
+       
     }
-    this->args[arguments.size()] = NULL;
+    cout << "num spaces:" << num_spaces << endl;
+    this->args[arguments.size()-num_spaces] = NULL;
 }
 
 bool Command::execute() {
