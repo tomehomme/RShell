@@ -1,2 +1,4 @@
+echo exit; ls -a; exit
 exit
-echo exit; ls; exit
+echo exit this; exit; echo b
+

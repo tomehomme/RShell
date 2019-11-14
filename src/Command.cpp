@@ -11,12 +11,17 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <iostream>
+
 #include <sys/wait.h>
-//#include "../header/RBase.h"
+
 #include "../header/Command.h"
 
 
+
+Command::Command(std::string com) {
+  this->executable = com;
+  parse(executable);
+}
 
 void Command::parse(std::string toParse){
     vector<string> parsed;
@@ -37,13 +42,6 @@ void Command::parse(std::string toParse){
     }
     this->args[arguments.size()] = NULL;
 }
-
-
-Command::Command(std::string com) {
-  this->executable = com;
-  parse(executable);
-}
-
 
 bool Command::execute() {
 //cout << args[0] << endl;

@@ -1,11 +1,12 @@
 #include <iostream>
 #include <map>
+#include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string_regex.hpp>
-#include <boost/regex.hpp>
 #include <boost/fusion/iterator/advance.hpp>
 #include <boost/fusion/include/advance.hpp>
+
 #include "../header/RBase.h"
 
 #include "../header/Executer.h"
@@ -29,7 +30,6 @@ Connector * getConnector(char * type){
     return nullptr;
 }
 
-Connector::Connector(){};
 
 void Executer::parse(std::string toParse){
   //first, lets remove comments 
@@ -71,8 +71,8 @@ void Executer::parse(std::string toParse){
   for(int i = 0; i < splitSemi.size(); ++i){
     cout << "Indexes for " << splitSemi.at(i) << endl;
     vector<pair<int,int>> tempConMap = connectorIndexes.at(i);
-    Command * cmd;
-    Connector * con;
+    Command * cmd = nullptr;
+    Connector * con = nullptr;
     vector<RBase*> intermList;
 
     for(int j = 0; j < tempConMap.size(); ++j){
@@ -185,14 +185,14 @@ cout <<"test" << endl;
   //     que.pop();
   //   }
   // }
-
+}
 
 bool Executer:: execute(){
   bool success = true;
-//  for (int i = 0; i < commandList.size(); i++){
-//	cout << "executing" << endl;
-//    this->commandList.at(i)->execute();
- // }
+  for (int i = 0; i < commandList.size(); i++){
+	cout << "executing" << endl;
+ this->commandList.at(i)->execute();
+ }
  return success;
 }
 
