@@ -11,8 +11,6 @@
 
 #include "And.cpp"
 #include "Or.cpp"
-#include "Semi.cpp"
-
 #include "Executer.cpp"
 
 int main(){
@@ -22,14 +20,20 @@ int main(){
    while (cont){
     string inputs;
     cout << "$ ";
-    getline(cin, inputs); 
+    //getline(cin, inputs); 
   // cout << "creating executer:" << endl;
   // I WILL UPDATE WHEN PARSING FUNCITON COMPLETE
-    Command* execute = new Command(inputs);
+    Executer* execute = new Executer("ls -la || mkdir test && echo hello || echo goodbye");
+ //  cout << "finished creating executer" << endl;
+//	cout << "begining executer execute()" << endl;
+    //execute->execute();
+	//cout << "finished execute. " <<endl;
+
+    //Command* execute = new Command(inputs);
  //  cout << "finished creating executer" << endl;
 //	cout << "begining executer execute()" << endl;
     execute->execute();
-}
+
 	cout << "finished execute. " <<endl;
     return 0;
 }
