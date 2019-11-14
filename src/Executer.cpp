@@ -38,7 +38,6 @@ void Executer::parse(std::string toParse){
    commandList.push_back(new Command("\0"));
 }
 
-
 bool Executer:: execute(){
   bool success = true;
   for (int i = 0; i < commandList.size(); i++){
