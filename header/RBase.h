@@ -12,6 +12,8 @@ class RBase{
       	std::string executable;
       	virtual	bool execute() = 0;
       	char* args[MAX_ARGS];
+       //for testing, add a print which print out what the commands are.
+       virtual void print() = 0;
 };
 
 #endif // __RBASE_H__

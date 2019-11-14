@@ -23,7 +23,7 @@ Command::Command(std::string com) {
 }
 
 void Command::parse(std::string toParse){
-cout << "COMMAND PARSE CLASS" << endl;
+//cout << "COMMAND PARSE CLASS" << endl;
     vector<string> parsed;
     vector<char*> arguments;
     //vector parsed holds all the arguments
@@ -80,7 +80,8 @@ parse(this->executable);
     //"returns the process id of child whose state has changed"
     if (status == 0) {
       //process id of child has not changed state
-      return false;
+     // perror("waitpid");
+      return true; //used to be false
     } else if (status == -1) {
       perror("waitpid");
       //also shows unknown command if status -1
@@ -92,5 +93,10 @@ parse(this->executable);
   }
   //forking failed or something went wrong.
   return false;
+}
+
+void Command::print(){
+  cout << this->executable;
+
 }
 

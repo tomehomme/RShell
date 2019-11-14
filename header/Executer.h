@@ -15,5 +15,7 @@ class Executer : public RBase{
         virtual void parse(std::string toParse);
 
         virtual bool execute();
+
+        virtual void print();
 };
 #endif // __EXECUTER_H__

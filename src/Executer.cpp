@@ -15,6 +15,7 @@
 #include "../header/And.h"
 #include "../header/Or.h"
 #include <queue> 
+#include <stack>
 
 using namespace std;
 
@@ -42,15 +43,21 @@ void Executer::parse(std::string toParse){
   vector<string> splitSemi;
   boost::algorithm::split_regex(splitSemi, toParse, boost::regex(";(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
   int lastpos;
+  
+  
+  //checks for a single command -- just pushes this single command without going through the connector check
   if (splitSemi.size() == 1){
 	if (splitSemi.at(0).find("&&") == string::npos && splitSemi.at(0).find("||") == string::npos){
 		commandList.push_back(new Command(splitSemi.at(0))); 
 		return;
 	}
+ 
+ 
 	}
   //connector splitting regex
   boost::regex conex2{"(&&(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)|\\|\\|(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))"};
-  for(int i = 0; i < splitSemi.size(); ++i){
+//tome: i added i+1, used to be i 
+ for(int i = 0; i < splitSemi.size(); ++i){
     vector< pair<int,int> > tempConMap;
     string par = splitSemi.at(i);
     //add dummy connector to the end
@@ -120,18 +127,80 @@ void Executer::parse(std::string toParse){
 
             }
         }
+  
+
         cout << endl<< endl;
 
         //my attempt at sorting code, can you try something here?
         //if you put dynamic cast in an if statement you can check type.
        vector<RBase*>command; 
-       
+  
+  
+  //check for single command (should not actually execute, since checks for this after splitSemi)     
 	if (intermList.size() == 1 ){
 		cout << "ONE COMMAND: " << intermList.at(0)->executable<<endl;
 		commandList.push_back(new Command(intermList.at(0)->executable));
 		return;
 	}
-    for(int i = 1; i+1  < intermList.size(); i=i+2){
+ 
+    //try stacks --> loop through until intermList size.
+    //on stack: push command --> next push will be a connector.
+    //pop off connector(keep track if it is and or or), pop off stack again for LEFT --> make new command for this
+    //next loop push onto stack. pop it off and makke this into the RIGHT of the connector
+    //push this RBase* connector = CONNECTORTYPE onto the stack.
+    
+    stack<RBase*> commandStack;
+    bool foundConnector = false;
+    string connectorType = "";
+    cout << "SIZE OF INTERMLIST: " << intermList.size() << endl;
+    for(int i = 0; i < intermList.size(); i++){
+      //check if the connector is && and we have not encountered a connector yet
+      if (dynamic_cast<And*>(intermList.at(i)) && !foundConnector){
+        cout << "FOUND AND. INDEX: " << i << endl;
+        connectorType = "&&";
+        foundConnector = true;
+      }
+      //check if the connector is || and we have not encountered a connector yet
+      else if (dynamic_cast<Or*>(intermList.at(i)) && !foundConnector){
+        cout << "FOUND OR. INDEX: " << i << endl;
+        connectorType = "||";
+        foundConnector = true;
+      }
+        //if we have not found a connector and it is not OR or AND, this is the LEFT of the connector
+      else if (!foundConnector){
+        cout << "FOUND LEFT: "; intermList.at(i)->print(); cout << endl;
+        commandStack.push(intermList.at(i));
+      } 
+      //found a connector and the position of the vector is not a connector, then this is the RIGHT
+      else{
+          if (connectorType == "&&"){
+            cout << "FOUND RIGHT: "; intermList.at(i)->print(); cout << endl;
+              cout << "PRINTING LEFT: "; commandStack.top()->print() ; cout << endl;
+              RBase* newAnd = new And(commandStack.top(), intermList.at(i));
+              //newAnd->print();
+              //pop off LEFT
+              commandStack.pop();
+              //push this new RBase* (AND) onto the stack
+              commandStack.push(newAnd);
+              
+          }
+          else if (connectorType == "||"){
+            cout << "FOUND RIGHT: "; intermList.at(i)->print(); cout << endl;
+              RBase* newOr = new Or(commandStack.top(), intermList.at(i));
+              //pop off LEFT
+              commandStack.pop();
+              //push this new RBase* (OR) onto the stack
+              commandStack.push(newOr);
+          }
+          //reset, since we found everything.
+          foundConnector = false;
+          connectorType = "";
+      }
+    
+    }
+    
+    //PREVIOUS TRY: USING THE VECTOR AND CHAGING POSITIONS
+   /* for(int i = 1; i+1  < intermList.size(); i=i+2){
         if(dynamic_cast<And*>(intermList.at(i))){
         cout << "PUSHING AND BACK INTO COMMAND" << endl;
           RBase* newRight = new Command(intermList.at(i+1)->executable);
@@ -142,11 +211,11 @@ void Executer::parse(std::string toParse){
                 intermList.at(i+1) = new Or(intermList.at(i-1), right);       
             }
             
-  }
+    }*/
         
 
         //the same print stuff again to see the changes
-        for(int k = 0; k < intermList.size(); ++k){
+     /*   for(int k = 0; k < intermList.size(); ++k){
             if(dynamic_cast<Command*>(intermList.at(k))) cout << "Command Index: " << k << " Contents: " << dynamic_cast<Command*>(intermList.at(k))->executable <<endl;
             if(dynamic_cast<And*>(intermList.at(k))){
                 cout << "AND     Index: " << k ;
@@ -159,19 +228,30 @@ void Executer::parse(std::string toParse){
                 cout << endl;
             }
         }
-//last item is the tree
-  	command.push_back(intermList.at(intermList.size()-1));  
+     */
+    //last item is the tree
+  	//command.push_back(intermList.at(intermList.size()-1));  
     
     //my stuff
-    cout << "COMMAND VECTOR SIZE:"<<command.size() << endl;
-    for (int i = 0; i < command.size(); i++){
-      commandList.push_back(command.at(command.size()-1));
+    //cout << "COMMAND VECTOR SIZE:"<<command.size() << endl;
+    //for (int i = 0; i < command.size(); i++){
+      //commandList.push_back(command.at(command.size()-1));
     
+   // }
+    
+    
+    while(!commandStack.empty()){
+        commandList.push_back(commandStack.top());
+        commandStack.pop();
     }
-    }
+    cout << "PRINTING COMMANDLIST" << endl;
+    this->print();
+    cout << endl;
     //end mystuff
 
 }
+}//
+//
 
 bool Executer:: execute(){
   bool success = true;
@@ -182,3 +262,10 @@ bool Executer:: execute(){
  return success;
 }
 
+void Executer:: print(){
+  for (int i = 0; i < commandList.size(); i++){
+    commandList.at(i)->print();
+  
+  }
+
+}

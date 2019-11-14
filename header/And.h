@@ -12,6 +12,7 @@ class And : public Connector{
 
     virtual bool execute();
     virtual void parse(string); 
+    virtual void print();
 };
 
 

@@ -22,3 +22,10 @@ bool Or::execute(){
         return true;
     }
 }
+
+void Or::print(){
+  this->left->print();
+  cout << " || " ;
+  this->right->print();
+
+}

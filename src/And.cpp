@@ -30,3 +30,10 @@ bool And::execute(){
         return this->right->execute();
     }
 }
+
+void And::print(){
+  this->left->print();
+  cout << " && ";
+  this->right->print();
+
+}
