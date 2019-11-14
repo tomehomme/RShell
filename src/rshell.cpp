@@ -16,15 +16,21 @@
 #include "Executer.cpp"
 
 int main(){
+  // Command* ls = new Command("echo #b");
+  // ls->execute();
+   bool cont = true;
+   while (cont){
     string inputs;
     cout << "$ ";
+    getline(cin, inputs); 
   // cout << "creating executer:" << endl;
   // I WILL UPDATE WHEN PARSING FUNCITON COMPLETE
-    Executer* execute = new Executer("");
+    Command* execute = new Command(inputs);
  //  cout << "finished creating executer" << endl;
 //	cout << "begining executer execute()" << endl;
     execute->execute();
-	//cout << "finished execute. " <<endl;
+}
+	cout << "finished execute. " <<endl;
     return 0;
 }
 

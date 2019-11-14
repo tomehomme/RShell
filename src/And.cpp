@@ -13,7 +13,7 @@ void And::parse(string s){}
 bool And::execute(){
     //cout << "We are in AND" << endl;
     //executes second statement only if the first one passes
-    if(!this->left->execute()){
+   if(!this->left->execute()){
         return false;
     }
     //if first command passes, then execute second one -- return if the second one passes.

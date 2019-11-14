@@ -13,17 +13,17 @@ TEST(AndTest, Constructor){
 }
 
 TEST(AndTest, Execute){
-    RBase* left = new Command("echo");
+    RBase* left = new Command("echo hello");
     RBase* right = new Command("ls");
     RBase* test = new And(left, right);
     test->execute();
 }
 
-TEST(AndTest, True){
-    RBase* left = new Command("echo");
+TEST(AndTest, FailFirstArg){
+    RBase* left = new Command("FAILTHIS");
     RBase* right = new Command("ls");
-    RBase* test = new And(left, right);
-    EXPECT_EQ(test->execute(), true);  
+    RBase* test = new And(left,right);
+    test->execute();
 }
 
 #endif

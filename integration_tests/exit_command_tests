@@ -1,0 +1,2 @@
+exit
+echo exit; ls; exit

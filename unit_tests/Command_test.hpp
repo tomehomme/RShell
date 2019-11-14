@@ -6,7 +6,7 @@
 
 
 TEST(CommandTest, Constructor){
-    RBase* test = new Command("echo");
+    RBase* test = new Command("echo hello");
 
 }
 
@@ -14,10 +14,24 @@ TEST(CommandTest, Execute){
     RBase* test = new Command("ls");
     test->execute();
 }
-
-TEST(CommandTest, True){
-    RBase* test = new Command("ls");
-    EXPECT_EQ(test->execute(), true);  
+TEST(CommandTest, multipleArgs){
+  RBase* test = new Command("ls -l -a");
+    test->execute();
 }
+
+
+TEST(CommandTest, commentedOut){
+  RBase* test = new Command("echo #a");
+    test->execute();
+}
+
+
+TEST(CommandTest, notRealArg){
+    RBase* test = new Command("NOTREAL");
+    test->execute();
+
+}
+
+
 
 #endif
