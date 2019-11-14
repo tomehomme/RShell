@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "RBase.h"
+
 class Executer : public RBase{
     protected:
         std::vector<RBase *> commandList;
@@ -12,6 +13,7 @@ class Executer : public RBase{
         //passes result to new Command and sets the appropriate bool flag if it is to the left of a connector. 
         //It then stores the new Command into commandList.
         virtual void parse(std::string toParse);
-        void Run();
+
+        virtual bool execute();
 };
-#endif 
+#endif // __EXECUTER_H__
