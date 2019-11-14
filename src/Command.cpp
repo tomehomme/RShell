@@ -11,14 +11,25 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <iostream>
+
 #include <sys/wait.h>
-//#include "../header/RBase.h"
+
 #include "../header/Command.h"
 
 
 
+Command::Command(std::string com) {
+  this->executable = com;
+}
+
 void Command::parse(std::string toParse){
+//cout << "COMMAND PARSE CLASS" << endl;
+
+  //delete white space
+  while (toParse[0] == ' '){
+    toParse = toParse.substr(1,toParse.size());
+    //cout << toParse << endl;
+  }
     vector<string> parsed;
     vector<char*> arguments;
     //vector parsed holds all the arguments
@@ -29,23 +40,36 @@ void Command::parse(std::string toParse){
         arguments.push_back(charCopy);
         //cout << par;
     }
-    for(char* cha : arguments){
-        cout << cha<<endl;
-    }
+   // for(char* cha : arguments){
+     //   cout << cha<<endl;
+   // }
+
+   //remove space??
+   int num_spaces = 0;
+   //if (arguments.at(i)[0] == ' ') { cout << " found space.. " << endl; i++;}
     for (unsigned i = 0; i < arguments.size(); i++) {
-        this->args[i] = arguments.at(i);
+     // cout << "arg;"<<arguments.at(i);
+    	if (arguments.at(i)[0] == '#'){
+    		break;	
+    	}
+      else if (string(arguments.at(i)) == "\0"){
+          num_spaces++;
+        }
+       else if (arguments.at(i)[0] != '\0'){ //remove spaces
+          this->args[i] = arguments.at(i);
+        }
+       
     }
-    this->args[arguments.size()] = NULL;
+    //cout << "num spaces:" << num_spaces << endl;
+    this->args[arguments.size()-num_spaces] = NULL;
 }
-
-
-Command::Command(std::string com) {
-  this->executable = com;
-  parse(executable);
-}
-
 
 bool Command::execute() {
+parse(this->executable);
+if (args[0]==NULL){
+  //no arg
+  return true;
+}
 //cout << args[0] << endl;
 //// cout << "we are in command execute fcn" << endl;
   if ( string(args[0]) == "exit" || string(args[0]) == "\0") {
@@ -78,17 +102,23 @@ bool Command::execute() {
     //"returns the process id of child whose state has changed"
     if (status == 0) {
       //process id of child has not changed state
-      return false;
+     // perror("waitpid");
+      return true; //used to be false
     } else if (status == -1) {
       perror("waitpid");
       //also shows unknown command if status -1
       return false;
     } else {
-      //execvp executed sucessfully
-      return true;
+      //failed somewhere -- for ex mkdir on a place where the folder already exists
+        return false;
     }
   }
   //forking failed or something went wrong.
   return false;
+}
+
+void Command::print(){
+  cout << this->executable;
+
 }
 

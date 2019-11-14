@@ -11,7 +11,9 @@
 
 #include "And.cpp"
 #include "Or.cpp"
+
 #include "Executer.cpp"
+
 
 int main(){
   // Command* ls = new Command("echo #b");
@@ -20,21 +22,17 @@ int main(){
    while (cont){
     string inputs;
     cout << "$ ";
-    //getline(cin, inputs); 
-  // cout << "creating executer:" << endl;
-  // I WILL UPDATE WHEN PARSING FUNCITON COMPLETE
-    Executer* execute = new Executer("ls -la || mkdir test && echo hello || echo goodbye");
- //  cout << "finished creating executer" << endl;
-//	cout << "begining executer execute()" << endl;
+ 
+    getline(cin, inputs); 
+    //change to inputs
+    Executer* execute = new Executer(inputs);
     //execute->execute();
 	//cout << "finished execute. " <<endl;
 
-    //Command* execute = new Command(inputs);
- //  cout << "finished creating executer" << endl;
-//	cout << "begining executer execute()" << endl;
     execute->execute();
-
-	cout << "finished execute. " <<endl;
+}
+//	cout << "finished execute. " <<endl;
     return 0;
+
 }
 

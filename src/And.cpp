@@ -20,7 +20,7 @@ And::And(){
 void And::parse(string s){}
 
 bool And::execute(){
-    //cout << "We are in AND" << endl;
+  //  cout << "We are in AND" << endl;
     //executes second statement only if the first one passes
    if(!this->left->execute()){
         return false;
@@ -29,4 +29,11 @@ bool And::execute(){
     else{
         return this->right->execute();
     }
+}
+
+void And::print(){
+  this->left->print();
+  cout << " && ";
+  this->right->print();
+
 }

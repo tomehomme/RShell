@@ -8,10 +8,11 @@ class Connector : public RBase{
   public:
     RBase* left;
     RBase* right;
-    Connector();
+    Connector(){}
     Connector(RBase* left, RBase* right){this->left = left; this->right = right;}
     virtual bool execute() = 0;
     virtual void parse(string) = 0;
+    virtual void print() = 0;
     private:
 };
 

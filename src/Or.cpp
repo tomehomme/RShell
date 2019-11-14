@@ -12,6 +12,7 @@ Or::Or(){
 
 }
 bool Or::execute(){
+	//cout << "OR EXECUTE \n";
     //executes second statement only if the first one fails
     if(!this->left->execute()){
         return this->right->execute();
@@ -20,4 +21,11 @@ bool Or::execute(){
     else{
         return true;
     }
+}
+
+void Or::print(){
+  this->left->print();
+  cout << " || " ;
+  this->right->print();
+
 }
