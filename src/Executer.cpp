@@ -49,6 +49,7 @@ Connector * getConnector(char * type) {
 void Executer::parse(std::string toParse) {
   vector < vector < RBase * >> intermListList;
 
+
   // if there are no connectors (only semi colons)
   if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
        // cout << "FOUND NO CONNECTORS!!" << endl;
@@ -69,15 +70,7 @@ void Executer::parse(std::string toParse) {
       }
       return;
   }
-  //first, lets remove comments 
-  boost::regex expression {
-    "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
-  };
-  std::string format {
-    ""
-  };
-  toParse = boost::regex_replace(toParse, expression, format);
-  // cout << toParse << endl;
+
 
   //now lets seperate our string by ;
   vector < string > splitSemi;
