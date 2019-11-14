@@ -14,7 +14,7 @@
 #include "../header/Command.h"
 #include "../header/And.h"
 #include "../header/Or.h"
-#include "../header/Semi.h"
+
 #include <queue> 
 #include <stack>
 

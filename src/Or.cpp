@@ -12,7 +12,7 @@ Or::Or(){
 
 }
 bool Or::execute(){
-	cout << "OR EXECUTE \n";
+	//cout << "OR EXECUTE \n";
     //executes second statement only if the first one fails
     if(!this->left->execute()){
         return this->right->execute();
