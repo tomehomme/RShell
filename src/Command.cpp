@@ -98,15 +98,16 @@ parse(this->executable);
     //"returns the process id of child whose state has changed"
     if (status == 0) {
       //process id of child has not changed state
-     // perror("waitpid");
+      perror("waitpid");
       return true; //used to be false
     } else if (status == -1) {
       perror("waitpid");
       //also shows unknown command if status -1
       return false;
     } else {
+      perror("cmd");
       //execvp executed sucessfully
-      return true;
+      return false;
     }
   }
   //forking failed or something went wrong.
