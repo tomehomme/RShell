@@ -78,7 +78,10 @@ void Executer::parse(std::string toParse){
     for(int j = 0; j < tempConMap.size(); ++j){
       con = nullptr;
       cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
-      
+     
+//COMMENT OUT THIS LATER
+     cout <<"COMMANDS: " << cmd->executable << endl; 
+
       if(tempConMap.at(j).first-3 > 0){
         //get connector of proper type
         con = getConnector(&splitSemi.at(i).at(tempConMap.at(j).first-3));
@@ -116,17 +119,49 @@ void Executer::parse(std::string toParse){
 
         //my attempt at sorting code, can you try something here?
         //if you put dynamic cast in an if statement you can check type.
-        
+       vector<RBase*>command; 
         if(intermList.size() > 1){
-          for(int k = 1; k + 1 < intermList.size(); ++k){
-              if(dynamic_cast<And*>(intermList.at(k))){
-                dynamic_cast<And*>(intermList.at(k))->left = intermList.at(k-1);
-                dynamic_cast<And*>(intermList.at(k))->right = intermList.at(k+1);
-                intermList.erase (intermList.begin(),intermList.begin()+2);
-              } else if(dynamic_cast<Or*>(intermList.at(k))){
-                dynamic_cast<Or*>(intermList.at(k))->left = intermList.at(k-1);
-                dynamic_cast<Or*>(intermList.at(k))->right = intermList.at(k+1);
-                intermList.erase (intermList.begin(),intermList.begin()+2);
+	if (intermList.size() == 1){
+		cout << "ONE COMMAND: " << intermList.at(0)->executable << endl;
+//		commandList.push_back(new Command(intermList.at(0)->executable));
+}
+          for(int i = 1; i+1  < intermList.size(); i=i+2){
+              if(dynamic_cast<And*>(intermList.at(i))){
+
+//MY STUFF
+	cout << "intermList.at(i)-1: " << intermList.at(i)->executable << endl;
+//	RBase* left = new Command(intermList.at(i-1)->executable);
+//	cout << "AND LEFT: " <<left->executable << endl;
+//	 RBase* right = new Command(intermList.at(i+1)->executable); 
+//	cout << "AND RIGHT: " <<right->executable << endl;
+	cout << "PUSHING BACK INTO COMMAND" << endl;
+	RBase* newRight = new Command(intermList.at(i+1)->executable);
+//	command.push_back(new And(intermList.at(i-1),intermList.at(i+1)));
+	intermList.at(i+1) = new And(intermList.at(i-1),newRight);
+	//commands.push_back(new And(intermList.at(k-1),intermList.at(k+1)));
+//	intermList.at(k) = new And(intermList.at(k-1),intermList.at(k+1));
+//END MYSEUF
+              //  dynamic_cast<And*>(intermList.at(k))->left = intermList.at(k-1);
+		//	cout << "INTERM LEFT:" <<intermList.at(k)->left->executable << endl;
+        //        dynamic_cast<And*>(intermList.at(k))->right = intermList.at(k+1);
+		//	cout << "INTERM RIGHT: " <<intermList.at(k)->right->executable << endl;
+                //intermList.erase (intermList.begin(),intermList.begin()+2);
+              } else if(dynamic_cast<Or*>(intermList.at(i))){
+             //   dynamic_cast<Or*>(intermList.at(k))->left = intermList.at(k-1);
+               // dynamic_cast<Or*>(intermList.at(k))->right = intermList.at(k+1);
+               //MY STUFF
+	cout << "PUSHING OR INTO COMMAND" << endl;
+	RBase* right = new Command(intermList.at(i+1)->executable);
+//	command.push_back(new Or(intermList.at(i-1),intermList.at(i+1)));
+	intermList.at(i+1) = new Or(intermList.at(i-1), right);          
+    // RBase* left = new Command(intermList.at(i-1)->executable); RBase* right = new Command(intermList.at(i+1)->executable); 
+	//	command.push_back(new Or(left,right));
+	//	intermList.at(i+1) = new Or(left,right);
+           //    commands.push_back(new Or(intermList.at(k-1),intermList.at(k+1)));
+             //  intermList.at(k) = new Or(intermList.at(k-1),intermList.at(k+1));
+               //END MYSUTFF
+               //
+              //  intermList.erase (intermList.begin(),intermList.begin()+2);
               }
               
           }
@@ -137,17 +172,26 @@ void Executer::parse(std::string toParse){
             if(dynamic_cast<Command*>(intermList.at(k))) cout << "Command Index: " << k << " Contents: " << dynamic_cast<Command*>(intermList.at(k))->executable <<endl;
             if(dynamic_cast<And*>(intermList.at(k))){
                 cout << "AND     Index: " << k ;
-                if(dynamic_cast<And*>(intermList.at(k))->left!= nullptr) cout <<" Left: " << (dynamic_cast<And*>(intermList.at(k))->left)->executable ;
+               // if(dynamic_cast<And*>(intermList.at(k))->left!= nullptr) cout <<" Left: " << (dynamic_cast<And*>(intermList.at(k))->left)->executable ;
                 cout << endl;
             }
             if(dynamic_cast<Or*>(intermList.at(k))){
                 cout << "Or      Index: " << k ;
-                if(dynamic_cast<Or*>(intermList.at(k))->left!= nullptr) cout <<" Left: " << (dynamic_cast<Or*>(intermList.at(k))->left)->executable;
+             //   if(dynamic_cast<Or*>(intermList.at(k))->left!= nullptr) cout <<" Left: " << (dynamic_cast<Or*>(intermList.at(k))->left)->executable;
                 cout << endl;
             }
         }
+  	command.push_back(intermList.at(intermList.size()-1));  
+    
+    //my stuff
+    cout << "COMMAND VECTOR SIZE:"<<command.size() << endl;
+    for (int i = 0; i < command.size(); i++){
+      commandList.push_back(command.at(command.size()-1));
+    
     }
-cout <<"test" << endl;
+    }
+    //end mystuff
+    
   //   for(int k = 0; k < intermListList.size(); ++k){
   //     for(int j = 0; j < intermListList.at(j).size(); ++j){
   //       for(int k = 0; k < intermList.size(); ++k){
@@ -191,7 +235,7 @@ bool Executer:: execute(){
   bool success = true;
   for (int i = 0; i < commandList.size(); i++){
 	cout << "executing" << endl;
- this->commandList.at(i)->execute();
+	 this->commandList.at(i)->execute();
  }
  return success;
 }
