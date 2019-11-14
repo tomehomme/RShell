@@ -20,10 +20,11 @@
 
 Command::Command(std::string com) {
   this->executable = com;
-  parse(executable);
+   parse(executable);
 }
 
 void Command::parse(std::string toParse){
+cout << "COMMAND PARSE CLASS" << endl;
     vector<string> parsed;
     vector<char*> arguments;
     //vector parsed holds all the arguments
@@ -34,10 +35,13 @@ void Command::parse(std::string toParse){
         arguments.push_back(charCopy);
         //cout << par;
     }
-    for(char* cha : arguments){
-        cout << cha<<endl;
-    }
+   // for(char* cha : arguments){
+     //   cout << cha<<endl;
+   // }
     for (unsigned i = 0; i < arguments.size(); i++) {
+	if (arguments.at(i)[0] == '#'){
+		break;	
+	}
         this->args[i] = arguments.at(i);
     }
     this->args[arguments.size()] = NULL;
