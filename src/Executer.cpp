@@ -13,6 +13,7 @@
 #include "../header/Command.h"
 #include "../header/And.h"
 #include "../header/Or.h"
+#include <queue> 
 
 using namespace std;
 
@@ -43,10 +44,12 @@ void Executer::parse(std::string toParse){
   int lastpos;
 
   //connector splitting regex
-  boost::regex conex2{"((?<!\\\\)\"|&&(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)|\\|\\|(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))"};
+  boost::regex conex2{"(&&(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)|\\|\\|(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))"};
   for(int i = 0; i < splitSemi.size(); ++i){
     vector< pair<int,int> > tempConMap;
     string par = splitSemi.at(i);
+    //add dummy connector to the end
+    par += " && ";
     //lets note the locations and selection groups of each connector
     boost::sregex_iterator p1(par.begin(), par.end(), conex2);
     boost::sregex_iterator p2;
@@ -61,17 +64,19 @@ void Executer::parse(std::string toParse){
     }
     connectorIndexes.push_back(tempConMap);
   }
-    Command * cmd;
-    Connector * con;
 
-    vector<RBase*> intermList;
+  vector<vector<RBase*>> intermListList;
 
   //use locations to generate appropriate objects
   for(int i = 0; i < splitSemi.size(); ++i){
     cout << "Indexes for " << splitSemi.at(i) << endl;
     vector<pair<int,int>> tempConMap = connectorIndexes.at(i);
+    Command * cmd;
+    Connector * con;
+    vector<RBase*> intermList;
 
     for(int j = 0; j < tempConMap.size(); ++j){
+      con = nullptr;
       cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
       
       if(tempConMap.at(j).first-3 > 0){
@@ -79,20 +84,79 @@ void Executer::parse(std::string toParse){
         con = getConnector(&splitSemi.at(i).at(tempConMap.at(j).first-3));
         con->left = nullptr;
         con->right = nullptr;
+        //cout << "second: " << tempConMap.at(j).second << " size: " << splitSemi.at(i).size() << endl; 
+        if(tempConMap.at(j).second != splitSemi.at(i).size() -1 ) intermList.push_back(con);
       }
       intermList.push_back(cmd);
-      if(con) intermList.push_back(con);
     }
-  
-
-    cout << endl;
+    cout << endl << endl;
+    intermListList.push_back(intermList);
   }
-  //AND TEST.. DELETE LATER
-  commandList.push_back(new Command("\0"));
 
+  for(vector<RBase*> intermList : intermListList){
+        cout << "COMMAND GROUP PARSED: \n";
+        for(int k = 0; k < intermList.size(); ++k){
+            if(dynamic_cast<Command*>(intermList.at(k))) cout << "Command Index: " << k << " Contents: " << dynamic_cast<Command*>(intermList.at(k))->executable <<endl;
+            if(dynamic_cast<And*>(intermList.at(k))) cout << "AND     Index: " << k << " Left: " << &dynamic_cast<And*>(intermList.at(k))->left <<endl;
+            if(dynamic_cast<Or*>(intermList.at(k))) cout << "OR      Index: " << k << " Left: " << dynamic_cast<Or*>(intermList.at(k))->executable <<endl;
+        }
+        cout << endl<< endl;
+        if(intermList.size() > 1){
+          for(int k = 1; k + 1 < intermList.size(); ++k){
+              if(dynamic_cast<And*>(intermList.at(k))){
+                dynamic_cast<And*>(intermList.at(k))->left = intermList.at(k-1);
+                dynamic_cast<And*>(intermList.at(k))->right = intermList.at(k+1);
+              } else if(dynamic_cast<Or*>(intermList.at(k))){
+                dynamic_cast<Or*>(intermList.at(k))->left = intermList.at(k-1);
+                dynamic_cast<Or*>(intermList.at(k))->right = intermList.at(k+1);
+              }
+              
+          }
+        }
+    }
+
+  //   for(int k = 0; k < intermListList.size(); ++k){
+  //     for(int j = 0; j < intermListList.at(j).size(); ++j){
+  //       for(int k = 0; k < intermList.size(); ++k){
+  //       if(dynamic_cast<Command*>(intermList.at(k))) cout << "Command Index: " << k << " Contents: " << dynamic_cast<Command*>(intermList.at(k))->executable <<endl;
+  //       if(dynamic_cast<And*>(intermList.at(k))) cout << "AND     Index: " << k << " Left: " << &dynamic_cast<And*>(intermList.at(k))->left <<endl;
+  //       if(dynamic_cast<Or*>(intermList.at(k))) cout << "OR      Index: " << k << " Left: " << dynamic_cast<Or*>(intermList.at(k))->executable <<endl;
+  //       }
+  //     }
+  //  }
+
+
+
+
+  // //populate queue
+  // queue <RBase*> que; 
+  
+  // //temp vars
+  // RBase* tm1;
+  // RBase* last;
+
+  // //we have all the objects we need, in order, in intermList. now just connect em up.
+
+  // for(RBase* tm : intermList){
+  //   while (!que.empty()){ 
+  //     tm1 = que.front();
+  //     que.pop();
+  //     if(dynamic_cast<And*>(tm1) && last){
+  //       dynamic_cast<And*>(tm1)->left = last;  
+
+  //     }else if(dynamic_cast<Or*>(tm1) && last){
+  //       dynamic_cast<Or*>(tm1)->left = last;  
+  //     }
+
+  //     last = tm1;
+  //     que.pop();
+  //   }
+  // }
+
+  
 }
 
-bool Executer:: execute(){
+bool Executer::execute(){
   bool success = true;
   for (int i = 0; i < commandList.size(); i++){
 //	cout << "executing" << endl;

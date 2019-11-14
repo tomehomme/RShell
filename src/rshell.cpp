@@ -18,7 +18,7 @@ int main(){
     cout << "$ ";
   // cout << "creating executer:" << endl;
   // I WILL UPDATE WHEN PARSING FUNCITON COMPLETE
-    Executer* execute = new Executer("echo hello35 && git status2 || echo ugotthis");
+    Executer* execute = new Executer("echo simpleecho ; echo  \"bruh escaped quote: \\\" hell yah\" ; git status || echo \"Git is not working\" ");
  //  cout << "finished creating executer" << endl;
 //	cout << "begining executer execute()" << endl;
     //execute->execute();

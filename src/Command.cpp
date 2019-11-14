@@ -65,10 +65,6 @@ void Command::parse(std::string toParse){
 }
 
 
-Command::Command(std::string com){
-    this->executable = com;
-    parse(com); 
-}
 
 bool Command::execute(){
   // cout << "we are in command execute fcn" << endl;
