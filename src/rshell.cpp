@@ -11,7 +11,10 @@
 
 #include "And.cpp"
 #include "Or.cpp"
+//ADDED SEMI
+#include "Semi.cpp"
 #include "Executer.cpp"
+
 
 int main(){
   // Command* ls = new Command("echo #b");
