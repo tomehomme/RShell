@@ -20,7 +20,6 @@
 
 Command::Command(std::string com) {
   this->executable = com;
-   parse(executable);
 }
 
 void Command::parse(std::string toParse){
@@ -48,6 +47,7 @@ cout << "COMMAND PARSE CLASS" << endl;
 }
 
 bool Command::execute() {
+parse(this->executable);
 //cout << args[0] << endl;
 //// cout << "we are in command execute fcn" << endl;
   if ( string(args[0]) == "exit" || string(args[0]) == "\0") {
