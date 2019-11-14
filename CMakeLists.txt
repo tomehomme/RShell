@@ -16,16 +16,7 @@ if(Boost_FOUND)
     target_link_libraries(test  ${Boost_LIBRARIES})
 endif()
  
- ADD_EXECUTABLE(rshell
-   header/
-   src/
-   ./src/rshell.cpp
-)
-
-ADD_EXECUTABLE(test
-  ./unit_tests/unit_test.cpp
-
-)
+ 
  
  
 TARGET_LINK_LIBRARIES(test gtest)

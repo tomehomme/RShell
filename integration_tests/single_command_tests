@@ -1,6 +1,6 @@
-echo "hello"
-echo "hello world"
-ls
+echo hello
+echo hello world
 ls -a
 mkdir test
+echo #a
 exit

@@ -35,7 +35,7 @@ using namespace std;
 vector < vector < pair < int, int >>> connectorIndexes;
 
 Executer::Executer(std::string in ) {
-  cout << "parsing: " << endl;
+  // cout << "parsing: " << endl;
   this->parse( in );
 }
 
@@ -49,6 +49,26 @@ Connector * getConnector(char * type) {
 void Executer::parse(std::string toParse) {
   vector < vector < RBase * >> intermListList;
 
+  // if there are no connectors (only semi colons)
+  if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
+       // cout << "FOUND NO CONNECTORS!!" << endl;
+        boost::regex expression {
+        "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
+      };
+      std::string format {
+        ""
+      };
+      toParse = boost::regex_replace(toParse, expression, format);
+      vector < string > splitSemi;
+      //ADDED SEMI INTO SPLIT SEMI
+
+      //deleted ; in boost::regex(";(?=...
+      boost::algorithm::split_regex(splitSemi, toParse, boost::regex(";(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)"));
+      for (int i = 0; i < splitSemi.size(); i++){
+        commandList.push_back(new Command(splitSemi.at(i)));
+      }
+      return;
+  }
   //first, lets remove comments 
   boost::regex expression {
     "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
@@ -57,7 +77,7 @@ void Executer::parse(std::string toParse) {
     ""
   };
   toParse = boost::regex_replace(toParse, expression, format);
-  cout << toParse << endl;
+  // cout << toParse << endl;
 
   //now lets seperate our string by ;
   vector < string > splitSemi;
@@ -67,6 +87,7 @@ void Executer::parse(std::string toParse) {
   boost::algorithm::split_regex(splitSemi, toParse, boost::regex(";(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)"));
   int lastpos;
 
+  bool hasConnectors = true;
   //checks for a single command -- just pushes this single command without going through the connector check
   if (splitSemi.size() == 1) {
     //ADDED SEMI
@@ -91,7 +112,7 @@ void Executer::parse(std::string toParse) {
     boost::sregex_iterator p2;
     // cout << "checking for connectors in string " << par << endl;
     if (p1 == p2) {
-      cout << "none \n" << endl;
+      // cout << "none \n" << endl;
       //tome: ADDED BREAK AFTER cout none
       break;
     }
@@ -116,58 +137,61 @@ void Executer::parse(std::string toParse) {
     for (int j = 0; j < tempConMap.size(); ++j) {
       con = nullptr;
       cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
+      // cout << "LINE 118: ";
+     // cmd->print();
+      // cout << endl;
 
       //COMMENT OUT THIS LATER
-      cout << "COMMANDS: " << cmd->executable << endl;
+      // cout << "COMMANDS: " << cmd->executable << endl;
 
       if (tempConMap.at(j).first - 3 > 0) {
         //get connector of proper type
         con = getConnector( & splitSemi.at(i).at(tempConMap.at(j).first - 3));
         con->left = nullptr;
         con->right = nullptr;
-        cout << "second: " << tempConMap.at(j).second << " size: " << splitSemi.at(i).size() << endl;
+        // cout << "second: " << tempConMap.at(j).second << " size: " << splitSemi.at(i).size() << endl;
         if (tempConMap.at(j).second != splitSemi.at(i).size() - 1) intermList.push_back(con);
       }
-      cout << "pushing command:" << cmd->executable << endl;
+      // cout << "pushing command:" << cmd->executable << endl;
       //chand intermList.push_back(cmd) to  intermList.push_back(new Command(cmd->executable));
       intermList.push_back(new Command(cmd->executable));
     }
-    cout << endl << endl;
+    // cout << endl << endl;
     intermListList.push_back(intermList);
   }
 
   //each group of commands has a list of objects. 
   for (vector < RBase * > intermList: intermListList) {
-    cout << "TOTAL INTERMLISTS TO GO THROU: " << intermListList.size() << endl;
-    cout << "COMMAND GROUP PARSED: \n";
+    // cout << "TOTAL INTERMLISTS TO GO THROU: " << intermListList.size() << endl;
+    // cout << "COMMAND GROUP PARSED: \n";
     //going through each object:
-    cout << "INTERMLIST SIZE " << intermList.size() << endl;
+    // cout << "INTERMLIST SIZE " << intermList.size() << endl;
     //check for single command (echo a; echo b)     
     if (intermList.size() == 1) {
-      cout << "ONE COMMAND: ";
-      intermList.at(0)->print();
-      cout << endl;
+      // cout << "ONE COMMAND: ";
+      //intermList.at(0)->print();
+      // cout << endl;
       commandList.push_back((intermList.at(0)));
       //adding break for this for loop
     } else {
       for (int k = 0; k < intermList.size(); ++k) {
-        if (dynamic_cast < Command * > (intermList.at(k))) cout << "Command Index: " << k << " Contents: " << dynamic_cast < Command * > (intermList.at(k))->executable << endl;
+       // if (dynamic_cast < Command * > (intermList.at(k))) cout << "Command Index: " << k << " Contents: " << dynamic_cast < Command * > (intermList.at(k))->executable << endl;
         if (dynamic_cast < And * > (intermList.at(k))) {
-          cout << "AND     Index: " << k;
-          if (dynamic_cast < And * > (intermList.at(k))->left != nullptr) cout << " Left: " << (dynamic_cast < And * > (intermList.at(k))->left)->executable;
-          cout << endl;
+          // cout << "AND     Index: " << k;
+       //   if (dynamic_cast < And * > (intermList.at(k))->left != nullptr) cout << " Left: " << (dynamic_cast < And * > (intermList.at(k))->left)->executable;
+          // cout << endl;
 
         }
         if (dynamic_cast < Or * > (intermList.at(k))) {
-          cout << "Or      Index: " << k;
-          if (dynamic_cast < Or * > (intermList.at(k))->left != nullptr) cout << " Left: " << (dynamic_cast < Or * > (intermList.at(k))->left)->executable;
-          cout << endl;
+          // cout << "Or      Index: " << k;
+        //  if (dynamic_cast < Or * > (intermList.at(k))->left != nullptr) cout << " Left: " << (dynamic_cast < Or * > (intermList.at(k))->left)->executable;
+          // cout << endl;
 
         }
 
       }
 
-      cout << endl << endl;
+      // cout << endl << endl;
       vector < RBase * > command;
 
       //try stacks --> loop through until intermList size.
@@ -183,37 +207,37 @@ void Executer::parse(std::string toParse) {
       stack < RBase * > commandStack;
       bool foundConnector = false;
       string connectorType = "";
-      cout << "SIZE OF INTERMLIST: " << intermList.size() << endl;
+      // cout << "SIZE OF INTERMLIST: " << intermList.size() << endl;
       for (int i = 0; i < intermList.size(); i++) {
         //check if the connector is && and we have not encountered a connector yet
         if (dynamic_cast < And * > (intermList.at(i)) && !foundConnector) {
-          cout << "FOUND AND. INDEX: " << i << endl;
+          // cout << "FOUND AND. INDEX: " << i << endl;
           connectorType = "&&";
           foundConnector = true;
         }
         //check if the connector is || and we have not encountered a connector yet
         else if (dynamic_cast < Or * > (intermList.at(i)) && !foundConnector) {
-          cout << "FOUND OR. INDEX: " << i << endl;
+          // cout << "FOUND OR. INDEX: " << i << endl;
           connectorType = "||";
           foundConnector = true;
         }
 
         //if we have not found a connector and it is not OR or AND, this is the LEFT of the connector
         else if (!foundConnector) {
-          cout << "FOUND LEFT: ";
-          intermList.at(i)->print();
-          cout << endl;
+          // cout << "FOUND LEFT: ";
+         // intermList.at(i)->print();
+          // cout << endl;
           commandStack.push(intermList.at(i));
         }
         //found a connector and the position of the vector is not a connector, then this is the RIGHT
         else {
           if (connectorType == "&&") {
-            cout << "FOUND RIGHT: ";
-            intermList.at(i)->print();
-            cout << endl;
-            cout << "PRINTING LEFT: ";
-            commandStack.top()->print();
-            cout << endl;
+            // cout << "FOUND RIGHT: ";
+            //intermList.at(i)->print();
+            // cout << endl;
+            // cout << "PRINTING LEFT: ";
+           // commandStack.top()->print();
+            // cout << endl;
             RBase * newAnd = new And(commandStack.top(), intermList.at(i));
             //newAnd->print();
             //pop off LEFT
@@ -222,9 +246,9 @@ void Executer::parse(std::string toParse) {
             commandStack.push(newAnd);
 
           } else if (connectorType == "||") {
-            cout << "FOUND RIGHT: ";
-            intermList.at(i)->print();
-            cout << endl;
+            // cout << "FOUND RIGHT: ";
+            //intermList.at(i)->print();
+            // cout << endl;
             RBase * newOr = new Or(commandStack.top(), intermList.at(i));
             //pop off LEFT
             commandStack.pop();
@@ -242,10 +266,10 @@ void Executer::parse(std::string toParse) {
         commandList.push_back(commandStack.top());
         commandStack.pop();
       }
-      cout << endl;
-      cout << "PRINTING COMMANDLIST" << endl;
-      this->print();
-      cout << endl << endl;
+      // cout << endl;
+      // cout << "PRINTING COMMANDLIST" << endl;
+   //  this->print();
+      // cout << endl << endl;
 
     } //end else for if the og vector  == 1
   }
@@ -253,7 +277,7 @@ void Executer::parse(std::string toParse) {
 
 bool Executer::execute() {
   bool success = true;
-  cout << "executing all commmands: " << endl << endl;
+  // cout << "executing all commmands: " << endl << endl;
   for (int i = 0; i < commandList.size(); i++) {
     this->commandList.at(i)->execute();
   }
