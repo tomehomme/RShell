@@ -115,6 +115,8 @@ void Executer::parse(std::string toParse){
         cout << endl<< endl;
 
         //my attempt at sorting code, can you try something here?
+        //if you put dynamic cast in an if statement you can check type.
+        
         if(intermList.size() > 1){
           for(int k = 1; k + 1 < intermList.size(); ++k){
               if(dynamic_cast<And*>(intermList.at(k))){
