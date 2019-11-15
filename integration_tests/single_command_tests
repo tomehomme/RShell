@@ -1,6 +1,12 @@
 echo hello
 echo hello world
+echo "hello"
+echo "hello world"
+ls
+ls -l
 ls -a
+ls -a -l
+#echo
 mkdir test
 echo #a
 exit
