@@ -51,7 +51,6 @@ void Executer::parse(std::string toParse) {
   if(toParse == "") return;
   vector < vector < RBase * >> intermListList;
 
-
   // if there are no connectors (only semi colons)
   if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
        // cout << "FOUND NO CONNECTORS!!" << endl;
@@ -72,7 +71,15 @@ void Executer::parse(std::string toParse) {
       }
       return;
   }
-
+  //first, lets remove comments 
+  boost::regex expression {
+    "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
+  };
+  std::string format {
+    ""
+  };
+  toParse = boost::regex_replace(toParse, expression, format);
+  // cout << toParse << endl;
 
   //now lets seperate our string by ;
   vector < string > splitSemi;
@@ -97,7 +104,7 @@ void Executer::parse(std::string toParse) {
     "(&&(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)|\\|\\|(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))"
   };
   //tome: i added i+1, used to be i 
-  
+
   for (int i = 0; i < splitSemi.size(); ++i) {
     vector < pair < int, int > > tempConMap;
     string par = splitSemi.at(i);
@@ -258,7 +265,6 @@ void Executer::parse(std::string toParse) {
         }
 
       }
-
       while (!commandStack.empty()) {
         commandList.push_back(commandStack.top());
         commandStack.pop();
@@ -269,6 +275,7 @@ void Executer::parse(std::string toParse) {
       // cout << endl << endl;
 
     } //end else for if the og vector  == 1
+
   }
 }
 
