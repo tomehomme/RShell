@@ -79,7 +79,7 @@ if (args[0]==NULL){
 //cout << args[0] << endl;
 //// cout << "we are in command execute fcn" << endl;
   if ( string(args[0]) == "exit" || string(args[0]) == "\0") {
-    cout << "goodbye." << endl;
+    cout << "logout" << endl;
     exit(1);
   }
 
@@ -99,7 +99,8 @@ if (args[0]==NULL){
     if (execvp(args[0], args) == -1) {
       //if returns, then this means somehting failed, maybe not a real command
       perror("execvp");
-      return false;
+      exit(1);
+      //return false;
     }
   }
   if (pid > 0) { //parent
