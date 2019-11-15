@@ -119,6 +119,7 @@ if (args[0]==NULL){
     } else if (status == -1) {
       perror("waitpid");
       //also shows unknown command if status -1
+      exit(1);
       return false;
     } else {
       //failed somewhere -- for ex mkdir on a place where the folder already exists

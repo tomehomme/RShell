@@ -32,7 +32,6 @@
 
 using namespace std;
 
-vector < vector < pair < int, int >>> connectorIndexes;
 
 Executer::Executer(std::string in ) {
   // cout << "parsing: " << endl;
@@ -47,6 +46,9 @@ Connector * getConnector(char * type) {
 }
 
 void Executer::parse(std::string toParse) {
+  vector < vector < pair < int, int >>> connectorIndexes;
+
+  if(toParse == "") return;
   vector < vector < RBase * >> intermListList;
 
 
@@ -95,6 +97,7 @@ void Executer::parse(std::string toParse) {
     "(&&(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)|\\|\\|(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))"
   };
   //tome: i added i+1, used to be i 
+  
   for (int i = 0; i < splitSemi.size(); ++i) {
     vector < pair < int, int > > tempConMap;
     string par = splitSemi.at(i);
@@ -122,12 +125,13 @@ void Executer::parse(std::string toParse) {
   //use locations to generate appropriate objects
   for (int i = 0; i < splitSemi.size(); ++i) {
     //cout << "Indexes for " << splitSemi.at(i) << endl;
-    vector < pair < int, int >> tempConMap = connectorIndexes.at(i);
-    Command * cmd = nullptr;
-    Connector * con = nullptr;
+
     vector < RBase * > intermList;
 
-    for (int j = 0; j < tempConMap.size(); ++j) {
+    for (int j = 0; j < connectorIndexes.at(i).size(); ++j) {
+      vector < pair < int, int >> tempConMap = connectorIndexes.at(i);
+      Command * cmd = nullptr;
+      Connector * con = nullptr;
       con = nullptr;
       cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
       // cout << "LINE 118: ";
