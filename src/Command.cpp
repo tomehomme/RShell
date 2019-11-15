@@ -23,36 +23,30 @@ Command::Command(std::string com) {
 }
 
 void Command::parse(std::string toParse){
-  //cout << "COMMAND PARSE CLASS" << endl;
-  //first, lets remove comments 
+//cout << "COMMAND PARSE CLASS" << endl;
   boost::regex expression {
     "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
   };
   std::string format {
     ""
   };
-  toParse = boost::regex_replace(toParse, expression, format);
-  cout << toParse << endl;
-  
   //delete white space
   while (toParse[0] == ' '){
     toParse = toParse.substr(1,toParse.size());
     //cout << toParse << endl;
   }
-  
-  
-  
+
+
     vector<string> parsed;
     vector<char*> arguments;
     //vector parsed holds all the arguments
-    boost::algorithm::split_regex(parsed, toParse, boost::regex(" ((?<!\\\\)\"| (?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))") ) ;
+    boost::algorithm::split_regex(parsed, toParse, boost::regex(" (?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
     for(string par : parsed){
-      boost::regex expression2 {"(?<!\\\\)\""};
-      par = boost::regex_replace(par, expression2, format);
-
-      char * charCopy = new char [par.length()+1];
-      strcpy (charCopy, par.c_str());
-      arguments.push_back(charCopy);
+        boost::regex expression2 {"(?<!\\\\)\""};
+        par = boost::regex_replace(par, expression2, format);
+        char * charCopy = new char [par.length()+1];
+        strcpy (charCopy, par.c_str());
+        arguments.push_back(charCopy);
         //cout << par;
     }
    // for(char* cha : arguments){
@@ -64,7 +58,7 @@ void Command::parse(std::string toParse){
    //if (arguments.at(i)[0] == ' ') { cout << " found space.. " << endl; i++;}
     for (unsigned i = 0; i < arguments.size(); i++) {
      // cout << "arg;"<<arguments.at(i);
-       if (string(arguments.at(i)) == "\0"){
+     if (string(arguments.at(i)) == "\0"){
           num_spaces++;
         }
        else if (arguments.at(i)[0] != '\0'){ //remove spaces
