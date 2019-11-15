@@ -79,7 +79,7 @@ if (args[0]==NULL){
 //cout << args[0] << endl;
 //// cout << "we are in command execute fcn" << endl;
   if ( string(args[0]) == "exit" || string(args[0]) == "\0") {
-    cout << "goodbye." << endl;
+    cout << "logout" << endl;
     exit(1);
   }
 
