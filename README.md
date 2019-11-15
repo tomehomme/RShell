@@ -9,7 +9,7 @@ RShell is a C++ Command shell which can print a command prompt, chain commands u
 Our project will utilize a Composite Design pattern. In our composite, our base class is called RBase. Using RBase class, each subsequent inheriting class will be able to access our input(string executable), parse and execute function. Inputs are ingested through the Executer, which then calls its parse method that builds a vector of RBase pointers called commandList, representing the user’s inputted commands. Then, our execute function will then be called on this Executer class, which uses recursive composition to then call each RBase's execute function in the vector. The RBase is a pure virtual class, and the user's commands are actually being represented and carried through our leaf class, Command. The Command class calls it's execute function and returns true or false depending on whether the command was successfully executed. Connectors (&&, ||, ;) is represented by our class Connector, which also inherits from RBase and uses Command to carry out functionality.
 
 ## Diagram
-![OMT Diagram](https://i.imgur.com/LJo7IG3.png)
+![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/master/images/OMT%20diagram%20(1).png?raw=true)
 ## Classes
 
 - RBase: composite base class with pure virtual parse function and pure virtual execute function. Used to allow for the inherited classes to interact and use each other's functions. Allows for our composite function to use recursive composition.
