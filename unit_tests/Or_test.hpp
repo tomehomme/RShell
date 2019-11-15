@@ -9,6 +9,8 @@ TEST(OrTest, Constructor){
     RBase* left = new Command("echo");
     RBase* right = new Command("ls");
     RBase* test = new Or(left, right);
+    test->print();
+    cout << endl;
 }
 
 TEST(OrTest, Execute){
@@ -18,4 +20,13 @@ TEST(OrTest, Execute){
     test->execute();
 }
 
+TEST(Or, Print){
+  RBase* left = new Command("echo hi");
+  RBase* right = new Command("echo bye");
+  RBase* test = new Or(left,right);
+  test->print();
+    cout << endl;
+
+
+}
 #endif

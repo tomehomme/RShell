@@ -1,4 +1,11 @@
 echo #
 echo #a
 echo b#
+#exit
+echo #this should not print
+echo this #should not print
+echo thi#s should print
+echo " # "
+echo # " "
+echo " b " #
 exit

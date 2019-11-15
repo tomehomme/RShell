@@ -1,2 +1,4 @@
 ls -a && echo b || mkdir test; git status
+echo a || echo b ; echo c && echo d ; echo e
+echo bananan phone || ls -a && echo and ; echo semi
 ls -a -l && exit

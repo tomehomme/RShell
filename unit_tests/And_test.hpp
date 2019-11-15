@@ -10,6 +10,8 @@ TEST(AndTest, Constructor){
     RBase* left = new Command("echo");
     RBase* right = new Command("ls");
     RBase* test = new And(left, right);
+    test->print();
+    cout << endl;
 }
 
 TEST(AndTest, Execute){
