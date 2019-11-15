@@ -1,5 +1,6 @@
 echo exit; ls -a; exit
 exit
+#exit
 #should exit by now
 echo exit this; exit; echo b
 
