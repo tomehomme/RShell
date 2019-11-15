@@ -46,6 +46,7 @@ Connector * getConnector(char * type) {
 }
 
 void Executer::parse(std::string toParse) {
+
   vector < vector < pair < int, int >>> connectorIndexes;
 
   if(toParse == "") return;
@@ -54,9 +55,9 @@ void Executer::parse(std::string toParse) {
   // if there are no connectors (only semi colons)
   if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
        // cout << "FOUND NO CONNECTORS!!" << endl;
-        boost::regex expression {
-        "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
-      };
+       boost::regex expression {
+    "(( #)|(^#))(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$).*$"
+  };
       std::string format {
         ""
       };
@@ -73,8 +74,11 @@ void Executer::parse(std::string toParse) {
   }
   //first, lets remove comments 
   boost::regex expression {
-    "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
+    "(( #)|(^#))(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$).*$"
   };
+  //boost::regex expression {
+    //"#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
+  //};
   std::string format {
     ""
   };

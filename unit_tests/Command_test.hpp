@@ -7,6 +7,8 @@
 
 TEST(CommandTest, Constructor){
     RBase* test = new Command("echo hello");
+    test->print();
+    cout << endl;
 
 }
 

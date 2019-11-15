@@ -99,7 +99,8 @@ if (args[0]==NULL){
     if (execvp(args[0], args) == -1) {
       //if returns, then this means somehting failed, maybe not a real command
       perror("execvp");
-      return false;
+      exit(1);
+      //return false;
     }
   }
   if (pid > 0) { //parent
