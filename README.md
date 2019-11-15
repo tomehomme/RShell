@@ -9,7 +9,7 @@ RShell is a C++ Command shell which can print a command prompt, chain commands u
 Our project will utilize a Composite Design pattern. In our composite, our base class is called RBase. Using RBase class, each subsequent inheriting class will be able to access our input(string executable), parse and execute function. Inputs are ingested through the Executer, which then calls its parse method that builds a vector of RBase pointers called commandList, representing the user’s inputted commands. Then, our execute function will then be called on this Executer class, which uses recursive composition to then call each RBase's execute function in the vector. The RBase is a pure virtual class, and the user's commands are actually being represented and carried through our leaf class, Command. The Command class calls it's execute function and returns true or false depending on whether the command was successfully executed. Connectors (&&, ||, ;) is represented by our class Connector, which also inherits from RBase and uses Command to carry out functionality.
 
 ## Diagram
-![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/tomehomme/execution/images/omt%20diagram.png?raw=true)
+![OMT Diagram](https://i.imgur.com/LJo7IG3.png)
 ## Classes
 
 - RBase: composite base class with pure virtual parse function and pure virtual execute function. Used to allow for the inherited classes to interact and use each other's functions. Allows for our composite function to use recursive composition.
@@ -18,7 +18,7 @@ Our project will utilize a Composite Design pattern. In our composite, our base 
   - Connector: Base class for the && || ; commands. Has an RBase* left and RBase* right that allows for the connectors to function how they are meant to.
     - And: Inherited from Connector. Handles the && command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and passes.
     - Or: Inherited from Connector. Handles the || command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and fails. 
-    - Semi: Inherited from Connector. Handles the ; command. Always executes the second comamnd (RBase* right) even if the first command (RBase* left) executes and fails 
+
 
 Note: inheritance is denoted by indentation
 
@@ -59,11 +59,15 @@ Of these list operators, ‘&&’ and ‘||’ have equal precedence, followed b
 We have decided to model our shell in the same way.
 
 
-## Parse function protoype usage / explanation
-Compile prototype/shellproto.cpp using g++ and c++ 11.
-Running the resulting executable will bring you to the shell.
-The parse method protoype utilizes stringstream to break up the user input (from getline) into space delimited strings.
-The first string is the executible to run, while the rest of the strings are arguments to be sent to the executible.
+## Compilation Instructions
+Clone the repository and run 
+```
+$ cmake .
+$ make
+```
+An rshell executible should appear in the directory.
+Run it using ``` ./rshell ```.
+
 ## Development and Testing Roadmap
 
 | Week | Issue                                            | Person |
