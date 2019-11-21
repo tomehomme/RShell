@@ -288,9 +288,11 @@ void Executer::parse(std::string toParse) {
 bool Executer::execute() {
   bool success = true;
   // cout << "executing all commmands: " << endl << endl;
-  for (int i = 0; i < commandList.size(); i++) {
+  for (int i = 0; i + 1 < commandList.size(); i++) {
     this->commandList.at(i)->execute();
   }
+  //the last command to run determines the success.
+  success = commandList.at(commandList.size()-1)->execute();
   commandList.clear();
   return success;
 }
