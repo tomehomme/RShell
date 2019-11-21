@@ -26,6 +26,8 @@
 
 #include "../header/Or.h"
 
+#include "../header/Paren.h"
+
 #include <queue>
 
 #include <stack>
