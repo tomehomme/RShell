@@ -34,6 +34,36 @@
 
 using namespace std;
 
+int distanceParen(string s){
+    stack <char> parens;
+    int distance = 0;
+    int i = s.find("(");
+    for (; i < s.size(); i++){
+        if (s.at(i) == '('){
+            parens.push(s.at(i));
+        }
+          else if (s.at(i) == ')'){
+             // cout << "found )" << endl;
+           parens.pop();
+           if (parens.empty()){
+               distance++;
+               //cout << "DISTANCE BETWEEN: " << distance << endl;
+               return distance;
+           }
+        }
+        distance++;
+    }
+    //cout << "DISTANCE BETWEEN: " << distance << endl;
+    return distance;
+}
+
+string replacePAREN(string &s){
+    //cout << "ORIGINAL: " << s << endl;
+    while (s.find("(") != string::npos){
+        s.replace(s.find("("), distanceParen(s), "PAREN");
+    }
+    return s;
+}
 
 Executer::Executer(std::string in ) {
   // cout << "parsing: " << endl;
@@ -48,7 +78,10 @@ Connector * getConnector(char * type) {
 }
 
 void Executer::parse(std::string toParse) {
+  toParse = replacePAREN(toParse);
+  cout << toParse << endl;
 
+  
   vector < vector < pair < int, int >>> connectorIndexes;
 
   if(toParse == "") return;
