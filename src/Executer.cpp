@@ -82,14 +82,6 @@ void Executer::parse(std::string toParse) {
       return;
   }
 
-
-  if (splitSemi.size() == 1) {
-    if (splitSemi.at(0).find("&&") == string::npos && splitSemi.at(0).find("||") == string::npos) {
-      commandList.push_back(new Command(splitSemi.at(0)));
-      return;
-    }
-  }
-
   //connector splitting regex
   boost::regex conex2 {"(&&(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)|\\|\\|(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$))"};
 
