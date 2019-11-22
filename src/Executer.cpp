@@ -74,7 +74,6 @@ void Executer::parse(std::string toParse) {
   vector < string > splitSemi;
   boost::algorithm::split_regex(splitSemi, toParse, boost::regex(";(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)"));
 
-
   if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
       for (int i = 0; i < splitSemi.size(); i++){
         commandList.push_back(new Command(splitSemi.at(i)));
@@ -112,23 +111,39 @@ void Executer::parse(std::string toParse) {
   //Pass this substring into command, using our getconnector helper function to determine connector
   //We must do this for every command we are given, so we iterate thru splitsemi.
   for (int i = 0; i < splitSemi.size(); ++i) {
-    vector < RBase * > intermList;
-    for (int j = 0; j < connectorIndexes.at(i).size(); ++j) {
-      vector < pair < int, int >> tempConMap = connectorIndexes.at(i);
-      Command * cmd = nullptr;
-      Connector * con = nullptr;
-      con = nullptr;
-      cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
 
-      if (tempConMap.at(j).first - 3 > 0) {
-        con = getConnector( & splitSemi.at(i).at(tempConMap.at(j).first - 3));
-        con->left = nullptr;
-        con->right = nullptr;
-        if (tempConMap.at(j).second != splitSemi.at(i).size() - 1) intermList.push_back(con);
+    cout << splitSemi.at(i) << endl;
+    vector < RBase * > intermList;
+    vector < pair < int, int >> tempConMap = connectorIndexes.at(i);
+    for (int j = 0; j < connectorIndexes.at(i).size(); ++j) {
+      
+      if (splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first) == "PAREN"){
+        //if it is PAREN, then we will push the paren command onto our intermList.
+        //We do this by initializing Paren with an Executer as its left*.
+        cout << "found parenthesis" << endl;
+        cout << "pushing " << qParen.front() << endl;
+        Paren* par = new Paren(new Executer(qParen.front()), nullptr);
+        qParen.pop();
+        intermList.push_back(par);
       }
-      intermList.push_back(cmd);
-    }
-    intermListList.push_back(intermList);
+      //made an else statement for if it is not a PAREN keyword
+      else{
+        Command * cmd = nullptr;
+        Connector * con = nullptr;
+        con = nullptr;
+        cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
+
+        if (tempConMap.at(j).first - 3 > 0) {
+          con = getConnector( & splitSemi.at(i).at(tempConMap.at(j).first - 3));
+          con->left = nullptr;
+          con->right = nullptr;
+          if (tempConMap.at(j).second != splitSemi.at(i).size() - 1) intermList.push_back(con);
+        }
+        intermList.push_back(cmd);
+       }
+      }
+      intermListList.push_back(intermList);
+
   }
 
   //Now we have a vector of vectors. Each index of the outer vector represents a seperate command (split up by ;) 
