@@ -74,7 +74,6 @@ void Executer::parse(std::string toParse) {
   vector < string > splitSemi;
   boost::algorithm::split_regex(splitSemi, toParse, boost::regex(";(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)"));
 
-
   if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
       for (int i = 0; i < splitSemi.size(); i++){
         commandList.push_back(new Command(splitSemi.at(i)));
@@ -112,6 +111,7 @@ void Executer::parse(std::string toParse) {
   //Pass this substring into command, using our getconnector helper function to determine connector
   //We must do this for every command we are given, so we iterate thru splitsemi.
   for (int i = 0; i < splitSemi.size(); ++i) {
+
     cout << splitSemi.at(i) << endl;
     vector < RBase * > intermList;
     vector < pair < int, int >> tempConMap = connectorIndexes.at(i);
@@ -126,6 +126,7 @@ void Executer::parse(std::string toParse) {
         qParen.pop();
         intermList.push_back(par);
       }
+      //made an else statement for if it is not a PAREN keyword
       else{
         Command * cmd = nullptr;
         Connector * con = nullptr;
@@ -142,6 +143,7 @@ void Executer::parse(std::string toParse) {
        }
       }
       intermListList.push_back(intermList);
+
   }
 
   //Now we have a vector of vectors. Each index of the outer vector represents a seperate command (split up by ;) 
