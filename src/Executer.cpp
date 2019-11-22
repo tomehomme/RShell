@@ -57,9 +57,11 @@ int distanceParen(string s){
     return distance;
 }
 
-string replacePAREN(string &s){
+string replacePAREN(string &s, queue <string> &commands){
     //cout << "ORIGINAL: " << s << endl;
     while (s.find("(") != string::npos){
+      // cout << s.substr(s.find("(")+1, distanceParen(s)-2) << endl;
+        commands.push(s.substr(s.find("(")+1,distanceParen(s)-2));
         s.replace(s.find("("), distanceParen(s), "PAREN");
     }
     return s;
@@ -73,15 +75,15 @@ Executer::Executer(std::string in ) {
 Connector * getConnector(char * type) {
   if ( * type == '&') return new And();
   if ( * type == '|') return new Or();
-  //adding semi method
   return nullptr;
 }
 
 void Executer::parse(std::string toParse) {
-  toParse = replacePAREN(toParse);
-  cout << toParse << endl;
+  //stores the commands of when we replaced them.
+  // (echo b) --> echo b
+  queue<string> qParen;
+  toParse = replacePAREN(toParse, qParen);
 
-  
   vector < vector < pair < int, int >>> connectorIndexes;
 
   if(toParse == "") return;
