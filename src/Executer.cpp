@@ -52,6 +52,7 @@ void Executer::parse(std::string toParse) {
   vector < vector < pair < int, int >>> connectorIndexes;
 
   if(toParse == "") return;
+  
   vector < vector < RBase * >> intermListList;
 
   // if there are no connectors (only semi colons)
@@ -248,22 +249,28 @@ void Executer::parse(std::string toParse) {
             // cout << "PRINTING LEFT: ";
            // commandStack.top()->print();
             // cout << endl;
-            RBase * newAnd = new And(commandStack.top(), intermList.at(i));
+            dynamic_cast<And*>(intermList.at(i-1))->left = commandStack.top();
+           dynamic_cast<And*>(intermList.at(i-1))->right = intermList.at(i);
+            //RBase * newAnd = new And(commandStack.top(), intermList.at(i));
             //newAnd->print();
             //pop off LEFT
             commandStack.pop();
             //push this new RBase* (AND) onto the stack
-            commandStack.push(newAnd);
+            //commandStack.push(newAnd);
+            commandStack.push(intermList.at(i-1));
 
           } else if (connectorType == "||") {
             // cout << "FOUND RIGHT: ";
             //intermList.at(i)->print();
             // cout << endl;
-            RBase * newOr = new Or(commandStack.top(), intermList.at(i));
+            dynamic_cast<Or*>(intermList.at(i-1))->left = commandStack.top();
+            dynamic_cast<Or*>(intermList.at(i-1))->right = intermList.at(i);
+            //RBase * newOr = new Or(commandStack.top(), intermList.at(i));
             //pop off LEFT
             commandStack.pop();
             //push this new RBase* (OR) onto the stack
-            commandStack.push(newOr);
+           // commandStack.push(newOr);
+           commandStack.push(intermList.at(i-1));
           }
 
           foundConnector = false;
@@ -294,6 +301,7 @@ bool Executer::execute() {
   //the last command to run determines the success.
   success = commandList.at(commandList.size()-1)->execute();
   commandList.clear();
+  //cout << "execute success: " << success << endl;
   return success;
 }
 
