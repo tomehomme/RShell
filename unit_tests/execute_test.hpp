@@ -34,7 +34,7 @@ TEST(ExecuteTest, CommentedOut2){
 TEST(ExecuteTest, AndOr){
     RBase* Orleft = new Command("echo");
     RBase* Orright = new Command("ls");
-    RBase* oR = new Or(left, right);
+    RBase* oR = new Or(Orleft, Orright);
     RBase* left = new Command ("echo left");
     RBase* test = new And(left, oR);
     test->execute();
@@ -42,15 +42,15 @@ TEST(ExecuteTest, AndOr){
 TEST(ExecuteTest, OrAnd){
     RBase* andLeft = new Command("echo and");
     RBase* andRight = new Command("ls");
-    RBase* and_ = new And(left, right);
+    RBase* and_ = new And(andLeft, andRight);
     RBase* left = new Command ("echo left");
     RBase* test = new Or(left, and_);
-    test->execute;
+    test->execute();
 }
 TEST(ExecuteTest, AndOrAnd){
      RBase* andLeft = new Command("echo andLeft");
     RBase* andRight = new Command("echo andRight");
-    RBase* and_ = new And(left, right);
+    RBase* and_ = new And(andLeft, andRight);
     
     RBase* Orleft = new Command("echo orLeft");
     RBase* Orright = new Command("echo orRight");
