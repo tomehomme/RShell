@@ -5,7 +5,8 @@
 #include "Command_test.hpp"
 #include "And_test.hpp"
 #include "Or_test.hpp"
-
+#include "execute_test.hpp"
+#include "Paren_test.hpp"
 
 int main(int argc, char** argv){
 
