@@ -41,7 +41,7 @@ int distanceParen(string s){
 string replacePAREN(string &s, queue <string> &commands){
     while (s.find("(") != string::npos){
         commands.push(s.substr(s.find("(")+1,distanceParen(s)-2));
-        s.replace(s.find("("), distanceParen(s), "PAREN");
+        s.replace(s.find("("), distanceParen(s), "^$^PAREN^$^");
     }
     return s;
 }
@@ -75,8 +75,14 @@ void Executer::parse(std::string toParse) {
   boost::algorithm::split_regex(splitSemi, toParse, boost::regex(";(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)"));
 
   if(toParse.find("&&") == string::npos && toParse.find("||") == string::npos){
+
       for (int i = 0; i < splitSemi.size(); i++){
-        commandList.push_back(new Command(splitSemi.at(i)));
+        if (boost::algorithm::trim_copy(splitSemi.at(i)) == "^$^PAREN^$^"){
+          commandList.push_back(new Executer(qParen.front()));
+          qParen.pop();
+        } else{
+          commandList.push_back(new Command(splitSemi.at(i)));
+        }
       }    
       return;
   }
@@ -105,24 +111,27 @@ void Executer::parse(std::string toParse) {
     }
     connectorIndexes.push_back(tempConMap);
   }
-
   //Now connectorIndexes has a pair of ints such that substr(first, second) is our command.
   //Therefore, at(first - 3) gives us a char for our connector
   //Pass this substring into command, using our getconnector helper function to determine connector
   //We must do this for every command we are given, so we iterate thru splitsemi.
   for (int i = 0; i < splitSemi.size(); ++i) {
 
-    cout << splitSemi.at(i) << endl;
     vector < RBase * > intermList;
     vector < pair < int, int >> tempConMap = connectorIndexes.at(i);
     for (int j = 0; j < connectorIndexes.at(i).size(); ++j) {
       
-      if (splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first) == "PAREN"){
+      if (splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first).find("^$^PAREN^$^") != string::npos ){
         //if it is PAREN, then we will push the paren command onto our intermList.
         //We do this by initializing Paren with an Executer as its left*.
-        cout << "found parenthesis" << endl;
-        cout << "pushing " << qParen.front() << endl;
+        Connector * con = nullptr;
         Paren* par = new Paren(new Executer(qParen.front()), nullptr);
+        if (tempConMap.at(j).first - 3 > 0) {
+          con = getConnector( & splitSemi.at(i).at(tempConMap.at(j).first - 3));
+          con->left = nullptr;
+          con->right = nullptr;
+          if (tempConMap.at(j).second != splitSemi.at(i).size() - 1) intermList.push_back(con);
+        }   
         qParen.pop();
         intermList.push_back(par);
       }
@@ -218,3 +227,4 @@ void Executer::print() {
     commandList.at(i)->print();
   }
 }
+
