@@ -9,10 +9,19 @@
 #include <boost/regex.hpp>
 
 #include <sys/types.h>
+
 #include <unistd.h>
+
 #include <stdlib.h>
 
 #include <sys/wait.h>
+
+
+#include <sys/stat.h>
+
+#include <time.h>
+
+#include <stdio.h>
 
 #include "../header/Command.h"
 
@@ -82,6 +91,85 @@ if (args[0]==NULL){
     cout << "logout" << endl;
     exit(1);
   }
+
+
+
+//BEGIN TEST ROUTE
+  if (string(args[0]) == "test" || string(args[0]) == "["){
+    bool success = false;
+    struct stat sb;
+    
+      if (string(args[1]) == "-f"){
+        //cout << "checking reg file" << endl;
+          if (stat(args[2], &sb) == -1) { //stats the file pointed by args[1] and fills in sb
+              perror("stat"); //if stat returns -1, error
+              cout << "(False)" << endl;
+              //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
+              return false;
+          }
+          if (S_ISREG(sb.st_mode) != 0) {
+          //  cout << "is reg file" << endl;
+            success = true;
+          }
+      }
+
+      else if (string(args[1]) == "-d"){
+           //cout << "check directory" << endl;
+          if (stat(args[2], &sb) == -1) { //stats the file pointed by args[1] and fills in sb
+              perror("stat"); //if stat returns -1, error
+              cout << "(False)" << endl;
+              //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
+              return false;
+          }
+        if (S_ISDIR(sb.st_mode) != 0){
+         // cout << "is dir" << endl;
+          success = true;
+        }
+      }
+
+
+      //PLEASE HLEP THIS PART :( 
+      else {
+        //default to -e
+        //cout << "testing file" << endl;
+         if (args[2] == NULL){
+            //ie, [ names.txt ] or test names.txt
+            //doesnt work for [ names.txt ], but works for test names.txt even tho theyre the same?
+            if (stat(args[1], &sb) == -1) {
+              perror("stat"); //if stat returns -1, error
+              cout << "(False)" << endl;
+              //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
+              return false;
+             }
+          }
+          else{ 
+            //ie, [ -f names.txt ] or test -f names.txt
+            if (stat(args[2], &sb) == -1) { 
+              perror("stat"); //if stat returns -1, error
+              cout << "(False)" << endl;
+              //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
+              return false;
+          }
+        }
+
+        //file exists if we did not return false / error yet
+        cout << " file exists" << endl;
+        success = true;
+        }
+
+        if (success){
+          cout << "(True)" << endl;
+          return true;
+        } else{
+          cout << "(False)" << endl;
+          return false;
+      }
+    }
+    //END TEST ROUTE
+
+
+    
+    
 
   //convert input into char*[] for execvp(args[0],args)
 
