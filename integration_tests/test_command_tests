@@ -1,5 +1,16 @@
+[ -f unit_tests ]
+[ -e unit_tests ]
+[ -d exit_command_tests ]
+[ -f exit_command_tests ]
+[ exit_command_tests ]
+[ -e names.txt ]
+test exit_command_tests
 test -e exit_command_tests && echo true
 test -e askldjaslkdjas || echo false
 [ exit_command_tests ] && echo true
 [ -e askldjaslkdjas ] || echo false
-
+test -e hello || (echo "false" || echo "true")
+test -f multiple_command_tests && echo true || (echo false && echo "file does not exist")
+test -d unit_tests/
+[ -d unit_tests ]
+exit

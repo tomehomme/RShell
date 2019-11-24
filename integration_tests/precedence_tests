@@ -13,4 +13,13 @@ echo a || (echo b && echo c)
 (echo b || echo c; echo e) || echo or
 echo a && echo b ; (echo c || ls -a; echo d) ; echo e
 (echo a #should not accept this
+(
+echo a )
+((echo a
+(echo a ))
+( echo a && (echo "nested" && (echo "second nest") ) )
+(echo "Execute first" && ( echo "execute second" || echo "do not execute" && (echo "execute third" ; echo "execute fourth" ) ) )
+(((echo "first" && echo "second" ) && echo "third" ) && echo "fourth" )
+(((echo "first" && echo "second" ) && echo "third" ) && echo "fourth" ) && (echo "fifth" && ((( echo "sixth" ) && echo "seventh" ) && (echo "eighth" )))
+test -e hello || (echo "false" || echo "true")
 exit

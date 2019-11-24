@@ -46,19 +46,14 @@ int main(){
     while (cont){
         string inputs;
         cout << "$ ";
-    
         getline(cin, inputs); 
         if(inputs != ""){
-            if (inputs.find('(') != string::npos && inputs.find(')') != string::npos) {
                 if(balancedParenthesis(inputs)){
                     Executer* execute = new Executer(inputs);
                     execute->execute();
                 } else {
-                    cout << "Unbalanced parenthesis";
-                }
-            } else {
-                Executer* execute = new Executer(inputs);
-                execute->execute();
+                    cout << "Unbalanced parenthesis" << endl;
+                
             }
             
         }
