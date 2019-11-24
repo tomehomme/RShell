@@ -7,6 +7,8 @@
 #include "Or_test.hpp"
 #include "execute_test.hpp"
 #include "Paren_test.hpp"
+#include "test_test.hpp"
+
 
 int main(int argc, char** argv){
 

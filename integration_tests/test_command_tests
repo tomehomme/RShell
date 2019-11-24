@@ -1,0 +1,5 @@
+test -e exit_command_tests && echo true
+test -e askldjaslkdjas || echo false
+[ exit_command_tests ] && echo true
+[ -e askldjaslkdjas ] || echo false
+
