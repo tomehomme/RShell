@@ -158,7 +158,7 @@ bool Command::Test(){
       if (string(args[1]) == "-f"){
         //cout << "checking reg file" << endl;
           if (stat(args[2], &sb) == -1) { //stats the file pointed by args[1] and fills in sb
-              perror("stat"); //if stat returns -1, error
+             
               cout << "(False)" << endl;
               //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
               return false;
@@ -172,7 +172,7 @@ bool Command::Test(){
       else if (string(args[1]) == "-d"){
            //cout << "check directory" << endl;
           if (stat(args[2], &sb) == -1) { //stats the file pointed by args[1] and fills in sb
-              perror("stat"); //if stat returns -1, error
+             
               cout << "(False)" << endl;
               //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
               return false;
@@ -192,7 +192,7 @@ bool Command::Test(){
             //ie, test names.txt
             //doesnt work for [ names.txt ], but works for test names.txt even tho theyre the same?
             if (stat(args[1], &sb) == -1) {
-              perror("stat"); //if stat returns -1, error
+              
               cout << "(False)" << endl;
               //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
               return false;
@@ -203,7 +203,7 @@ bool Command::Test(){
             if (string(args[2]) == "]"){
               // ie, [ names.txt ]
               if (stat(args[1], &sb) == -1) { 
-                perror("stat"); //if stat returns -1, error
+                
                 cout << "(False)" << endl;
                 //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
                 return false;
@@ -211,7 +211,7 @@ bool Command::Test(){
             }
             //if the argument is at args[2]
             else if (stat(args[2], &sb) == -1) { 
-              perror("stat"); //if stat returns -1, error
+              
               cout << "(False)" << endl;
               //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
               return false;
