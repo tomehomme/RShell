@@ -56,6 +56,9 @@ int main(){
                 } else {
                     cout << "Unbalanced parenthesis";
                 }
+            } else {
+                Executer* execute = new Executer(inputs);
+                execute->execute();
             }
             
         }
