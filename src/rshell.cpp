@@ -42,31 +42,23 @@ bool balancedParenthesis(string s){
 
 
 int main(){
-  // Command* ls = new Command("echo #b");
-  // ls->execute();
-   bool cont = true;
-   while (cont){
-    string inputs;
-    cout << "$ ";
- 
-    getline(cin, inputs); 
-    if(inputs != ""){
-    if (balancedParenthesis(inputs)){
-        // if parenthesis input is valid execute
-        //change to inputs
-        Executer* execute = new Executer(inputs);
-        //execute->execute();
-        //cout << "finished execute. " <<endl;
-
-        execute->execute();
+    bool cont = true;
+    while (cont){
+        string inputs;
+        cout << "$ ";
+    
+        getline(cin, inputs); 
+        if(inputs != ""){
+            if (inputs.find('(') != string::npos && inputs.find(')') != string::npos) {
+                if(balancedParenthesis(inputs)){
+                    Executer* execute = new Executer(inputs);
+                    execute->execute();
+                } else {
+                    cout << "Unbalanced parenthesis";
+                }
+            }
+            
+        }
     }
-    else {
-        cout << "Unbalanced parenthesis." << endl;
-    }
-    }
-    }
-//	cout << "finished execute. " <<endl;
     return 0;
-
 }
-
