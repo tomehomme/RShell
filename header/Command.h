@@ -13,6 +13,7 @@ class Command : public RBase{
         virtual bool  execute(); 
         virtual void parse(std::string toParse);
         Command(std::string com);
+        bool Test();
 	virtual void print();
 };      
 #endif // __COMMAND_H__
