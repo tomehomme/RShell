@@ -47,15 +47,17 @@ int main(){
         string inputs;
         cout << "$ ";
         getline(cin, inputs); 
+        
+        inputs = boost::regex_replace(inputs,   boost::regex {"(( #)|(^#))(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$).*$"}, "");
+        inputs = boost::trim_copy(inputs);
+
         if(inputs != ""){
                 if(balancedParenthesis(inputs)){
                     Executer* execute = new Executer(inputs);
                     execute->execute();
                 } else {
                     cout << "Unbalanced parenthesis" << endl;
-                
             }
-            
         }
     }
     return 0;
