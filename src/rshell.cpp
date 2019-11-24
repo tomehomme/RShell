@@ -50,6 +50,7 @@ int main(){
     cout << "$ ";
  
     getline(cin, inputs); 
+    if(inputs != ""){
     if (balancedParenthesis(inputs)){
         // if parenthesis input is valid execute
         //change to inputs
@@ -62,7 +63,8 @@ int main(){
     else {
         cout << "Unbalanced parenthesis." << endl;
     }
-}
+    }
+    }
 //	cout << "finished execute. " <<endl;
     return 0;
 
