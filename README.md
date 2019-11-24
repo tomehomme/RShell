@@ -9,15 +9,16 @@ RShell is a C++ Command shell which can print a command prompt, chain commands u
 Our project will utilize a Composite Design pattern. In our composite, our base class is called RBase. Using RBase class, each subsequent inheriting class will be able to access our input(string executable), parse and execute function. Inputs are ingested through the Executer, which then calls its parse method that builds a vector of RBase pointers called commandList, representing the user’s inputted commands. Then, our execute function will then be called on this Executer class, which uses recursive composition to then call each RBase's execute function in the vector. The RBase is a pure virtual class, and the user's commands are actually being represented and carried through our leaf class, Command. The Command class calls it's execute function and returns true or false depending on whether the command was successfully executed. Connectors (&&, ||) is represented by our class Connector, which also inherits from RBase and uses Command to carry out functionality.
 
 ## Diagram
-![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/master/images/OMT%20diagram%20(1).png?raw=true)
+![OMT Diagram](https://github.com/cs100/assignment-pajeet/blob/master/images/OMT%20diagram.png?raw=true)
 ## Classes
 
 - RBase: composite base class with pure virtual parse function and pure virtual execute function. Used to allow for the inherited classes to interact and use each other's functions. Allows for our composite function to use recursive composition.
   - Executer: Contains a vector of RBase pointers. When calling execute, this class will loop through the vector and call every RBase pointers in the vector's execute functions. This will represent calling the functions from left to right.
-  - Command: Is the actual "leaf" in the composite class. Will do the actual execution of the user's commands and returns true if the execution was successful, and false if the execution of the command was not. Calls fork, waitpid, and execvp in order to carry out the system calls.
+  - Command: Is the actual "leaf" in the composite class. Will do the actual execution of the user's commands and returns true if the execution was successful, and false if the execution of the command was not. Calls fork, waitpid, and execvp in order to carry out the system calls. Command also contains a bool Test() function which allows us to use the "test" command as well as its symbolic equivalent [ ] to check if a file or directory exists. 
   - Connector: Base class for the && || ; commands. Has an RBase* left and RBase* right that allows for the connectors to function how they are meant to.
     - And: Inherited from Connector. Handles the && command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and passes.
     - Or: Inherited from Connector. Handles the || command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and fails. 
+    - Paren: Inherited from Connector. Handels the precedence () comamnd. Constructor has an RBase* left and RBase* right. Takes in an Executer* as it's left, and a nullpointer as its right. Will build a tree using the Executer* passed in, which allows us to create precedence during execution.
 
 
 Note: inheritance is denoted by indentation
