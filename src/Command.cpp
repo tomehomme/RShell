@@ -156,6 +156,11 @@ bool Command::Test(){
     struct stat sb;
     int flagcounter = 0; 
 
+    if (string(args[1]) == "]" || (string(args[0]) == "test" && args[1] == NULL)){
+      cout << "(False)" << endl;
+      return false;
+    }
+
     for(int i = 0; i < 3 ; ++i){
       if(args[i][0] == '-' ) flagcounter++;
     }
