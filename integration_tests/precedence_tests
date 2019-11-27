@@ -14,6 +14,7 @@ echo a || (echo b && echo c)
 echo a && echo b ; (echo c || ls -a; echo d) ; echo e
 (echo a #should not accept this
 (
+()
 echo a )
 ((echo a
 (echo a ))
