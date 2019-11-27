@@ -44,8 +44,8 @@ int main(){
         inputs = boost::regex_replace(inputs,   boost::regex {"(( #)|(^#))(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$).*$"}, "");
         inputs = boost::trim_copy(inputs);
 
-        if(inputs != ""){
-                if(balancedParenthesis(inputs)){
+        if(boost::regex_replace(inputs,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "") != ""){
+                if(balancedParenthesis(boost::regex_replace(inputs,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, ""))){
                     Executer* execute = new Executer(inputs);
                     execute->execute();
                 } else {

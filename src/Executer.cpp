@@ -70,7 +70,9 @@ void Executer::parse(std::string toParse) {
   if(toParse == "") return;
 
   queue<string> qParen;
-  toParse = replacePAREN(toParse, qParen);
+  string strippedquotes = boost::regex_replace(toParse,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
+  
+  if(strippedquotes.find("(") != string::npos || strippedquotes.find(")") != string::npos)  toParse = replacePAREN(toParse, qParen);
   
   vector < vector < pair < int, int >>> connectorIndexes;
   vector < vector < RBase * >> intermListList;
