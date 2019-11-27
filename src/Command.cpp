@@ -16,6 +16,7 @@
 
 #include <sys/wait.h>
 
+#include <array>
 
 #include <sys/stat.h>
 
@@ -153,7 +154,16 @@ void Command::print(){
 bool Command::Test(){
     bool success = false;
     struct stat sb;
-    
+    int flagcounter = 0; 
+
+    for(int i = 0; i < 3 ; ++i){
+      if(args[i][0] == '-' ) flagcounter++;
+    }
+    if(flagcounter > 1){
+      cout << string(args[2]) << ": " << string(args[3])<< " : binary operator expected" << endl;
+      return false;
+    }
+
       if (string(args[1]) == "-f"){
         //cout << "checking reg file" << endl;
           if (stat(args[2], &sb) == -1) { //stats the file pointed by args[1] and fills in sb
