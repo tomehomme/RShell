@@ -17,27 +17,20 @@
 
 
 bool balancedParenthesis(string s){
-    // using GeeksForGeeks as reference
-    stack <char> parens;
-    for (int i = 0; i < s.size(); i++){
-        // cout << s.at(i) << endl;
-        if (s.at(i) == '('){
-          // cout << "   found paren ( " << endl;
-            parens.push(s.at(i));
-        }
-          else if (s.at(i) == ')'){
-            // cout << "   found paren ) " <<endl;
-            if (parens.empty()){
-             // cout << "   paren stack is empty! " << endl;
-              // if we find a (, but we have no ) in stack, then it is unbalanced
-              return false;
-            }
-            parens.pop();
-        }
-    }
-
-    // if there is still a ( in parens, then unbalanced
-    return parens.empty();
+   int count = 0;
+   for (int i = 0; i < s.size(); i++){
+     if (s.at(i) == '('){   
+       count++;
+     }
+     else if (s.at(i) == ')'){
+       count--;
+       if (count < 0){
+         //if it is negative, this means it is automatically false
+         return false;
+       }
+     }
+   }
+   return count == 0;
 }
 
 
