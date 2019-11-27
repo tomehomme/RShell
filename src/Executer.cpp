@@ -40,7 +40,14 @@ int distanceParen(string s){
 
 string replacePAREN(string &s, queue <string> &commands){
     while (s.find("(") != string::npos){
-        commands.push(s.substr(s.find("(")+1,distanceParen(s)-2));
+        if (s.substr(s.find("(")+1,distanceParen(s)-2).size() == 0){
+          //push back a empty command if user inputed ()
+          commands.push(" ");
+        }
+        else {
+          commands.push(s.substr(s.find("(")+1,distanceParen(s)-2));
+        }
+
         s.replace(s.find("("), distanceParen(s), "^$^PAREN^$^");
     }
     return s;
