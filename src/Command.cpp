@@ -156,18 +156,20 @@ bool Command::Test(){
     struct stat sb;
     int flagcounter = 0; 
 
-    if (string(args[1]) == "]" || (string(args[0]) == "test" && args[1] == NULL)){
+    if ( (string(args[0]) == "[" && string(args[1]) == "]") || (string(args[0]) == "test" && args[1] == NULL)){
       cout << "(False)" << endl;
       return false;
     }
 
-    for(int i = 0; i < 3 ; ++i){
-      if(args[i][0] == '-' ) flagcounter++;
-    }
-    if(flagcounter > 1){
-      cout << string(args[2]) << ": " << string(args[3])<< " : binary operator expected" << endl;
-      return false;
-    }
+      if (args[2] != NULL){
+        for(int i = 1; i <= 2 ; ++i){
+          if(args[i][0] == '-' ) flagcounter++;
+        }
+        if(flagcounter > 1){
+          cout << string(args[0]) << ": too many arguments" << endl;
+          return false;
+        }
+      }
 
       if (string(args[1]) == "-f"){
         //cout << "checking reg file" << endl;
@@ -200,13 +202,13 @@ bool Command::Test(){
 
      
       else {
+      
         //default to -e
         //cout << "testing file" << endl;
-         if (args[2] == NULL){
+         if ( args[1][0] != '-'){
             //ie, test names.txt
             //doesnt work for [ names.txt ], but works for test names.txt even tho theyre the same?
             if (stat(args[1], &sb) == -1) {
-              
               cout << "(False)" << endl;
               //exit(EXIT_FAILURE); //do we need to fail, or can we just return false
               return false;
