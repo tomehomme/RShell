@@ -80,7 +80,7 @@ void Command::parse(std::string toParse){
     this->args[arguments.size()-num_spaces] = NULL;
 }
 
-bool Command::execute() {
+bool Command::execute( int fdInput, int fdOutput) {
 parse(this->executable);
 if (args[0]==NULL){
   //no arg

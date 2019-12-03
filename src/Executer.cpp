@@ -221,7 +221,7 @@ void Executer::parse(std::string toParse) {
   return ;
 }
 
-bool Executer::execute() {
+bool Executer::execute( int fdInput, int fdOutput) {
   bool success = true;
 
   for (int i = 0; i + 1 < commandList.size(); i++) {

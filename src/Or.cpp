@@ -11,7 +11,7 @@ void Or::parse(string s){}
 Or::Or(){
 
 }
-bool Or::execute(){
+bool Or::execute(int fdInput, int fdOutput){
 	//cout << "OR EXECUTE \n";
     //executes second statement only if the first one fails
     if(!this->left->execute()){
