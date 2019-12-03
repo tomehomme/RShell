@@ -47,7 +47,7 @@ int main(){
         if(boost::regex_replace(inputs,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "") != ""){
                 if(balancedParenthesis(boost::regex_replace(inputs,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, ""))){
                     Executer* execute = new Executer(inputs);
-                    execute->execute();
+                    execute->execute(0,1);
                 } else {
                     cout << "Unbalanced parenthesis" << endl;
             }

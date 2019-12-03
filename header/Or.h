@@ -10,7 +10,7 @@ class Or : public Connector{
       Or(RBase* left, RBase* right):Connector(left,right){}
       Or();
       
-      virtual bool execute();
+      virtual bool execute( int fdInput, int fdOutput);
       virtual void parse(string); 
       virtual void print();
 };

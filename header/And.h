@@ -10,7 +10,7 @@ class And : public Connector{
     And(RBase* left, RBase* right);
     And();
 
-    virtual bool execute();
+    virtual bool execute(int fdInput, int fdOutput);
     virtual void parse(string); 
     virtual void print();
 };

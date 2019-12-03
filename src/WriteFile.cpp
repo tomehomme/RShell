@@ -19,7 +19,7 @@ WriteFile::WriteFile(){
 
 void WriteFile::parse(string s){}
 
-bool WriteFile::execute(){
+bool WriteFile::execute(int fdInput, int fdOutput){
 
 }
 

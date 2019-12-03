@@ -19,7 +19,7 @@ Pipe::Pipe(){
 
 void Pipe::parse(string s){}
 
-bool Pipe::execute(){
+bool Pipe::execute(int fdInput, int fdOutput){
 
 }
 

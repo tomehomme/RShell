@@ -19,7 +19,7 @@ WriteFileAppend::WriteFileAppend(){
 
 void WriteFileAppend::parse(string s){}
 
-bool WriteFileAppend::execute(){
+bool WriteFileAppend::execute(int fdInput, int fdOutput){
 
 }
 

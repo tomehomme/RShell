@@ -10,7 +10,7 @@ class WriteFile : public Connector{
     WriteFile(RBase* left, RBase* right);
     WriteFile();
 
-    virtual bool execute();
+    virtual bool execute( int fdInput, int fdOutput);
     virtual void parse(string); 
     virtual void print();
 };
