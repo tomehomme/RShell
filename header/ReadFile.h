@@ -10,7 +10,7 @@ class ReadFile : public Connector{
     ReadFile(RBase* left, RBase* right);
     ReadFile();
 
-    virtual bool execute();
+    virtual bool execute(int fdInput, int fdOutput);
     virtual void parse(string); 
     virtual void print();
 };

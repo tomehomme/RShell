@@ -10,7 +10,7 @@ class Pipe : public Connector{
     Pipe(RBase* left, RBase* right);
     Pipe();
 
-    virtual bool execute();
+    virtual bool execute( int fdInput, int fdOutput);
     virtual void parse(string); 
     virtual void print();
 };
