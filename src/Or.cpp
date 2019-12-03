@@ -14,8 +14,8 @@ Or::Or(){
 bool Or::execute(int fdInput, int fdOutput){
 	//cout << "OR EXECUTE \n";
     //executes second statement only if the first one fails
-    if(!this->left->execute()){
-        return this->right->execute();
+    if(!this->left->execute(fdInput, fdOutput)){
+        return this->right->execute(fdInput, fdOutput);
     }
     //if first command passes, do not execute the second one.
     else{
