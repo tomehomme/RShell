@@ -7,11 +7,12 @@
 class WriteFileAppend : public Connector{
   public:
     string filename;
-
+    int fdInput;
+    int fdOutput;
     WriteFileAppend(RBase* left, string right);
     WriteFileAppend();
 
-    virtual bool execute(int fdInput, int fdOutput);
+    virtual bool execute();
     virtual void parse(string); 
     virtual void print();
 };

@@ -34,7 +34,7 @@ void ReadFile::parse(string s){
 	//left and rights are already parsed
 }
 
-bool ReadFile::execute(int fdInput, int fdOutput){
+bool ReadFile::execute(){
 	//fdInput is created during construction
 	//fdOutput will be 1, for stdout
 

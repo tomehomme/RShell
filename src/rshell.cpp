@@ -14,11 +14,9 @@
 #include "Or.cpp"
 #include "Paren.cpp"
 #include "Executer.cpp"
-#include "Pipe.cpp"
-#include "PipeLine.cpp"
-#include "ReadFile.cpp"
 #include "WriteFile.cpp"
 #include "WriteFileAppend.cpp"
+#include "ReadFile.cpp"
 
 bool balancedParenthesis(string s){
    int count = 0;

@@ -1,4 +1,9 @@
 #include <iostream>
+#include "../header/Command.h"
+#include "../header/WriteFile.h"
+#include "../header/WriteFileAppend.h"
+#include "../header/ReadFile.h"
+
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string_regex.hpp>
@@ -12,7 +17,7 @@
 #include <time.h>
 #include <stdio.h>
 
-#include "../header/Command.h"
+
 
 using namespace std;
 
@@ -32,6 +37,34 @@ void Command::parse(std::string toParse){
     toParse = toParse.substr(1,toParse.size());
   }
 
+
+  //parse out | 
+  string strippedquotes = boost::regex_replace(toParse,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
+  vector<string> splitPipe;
+  vector<string> splitOutput;
+  if(strippedquotes.find("|") != string::npos){
+    boost::algorithm::split_regex(splitPipe, toParse, boost::regex("( \\| )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+   for(string tempSplitPipe : splitPipe){
+    string strippedTemp = boost::regex_replace(tempSplitPipe,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
+     if(strippedTemp.find(" > ") != string::npos){
+      //push correct file output connector with filename 
+      boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( > )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+      PipeLine.push_back(new WriteFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+     } else if(strippedTemp.find(" >> ") != string::npos){
+        boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( >> )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+        PipeLine.push_back(new WriteFileAppend(new Command(splitOutput.at(0)),splitOutput.at(1)));
+     } else if (strippedTemp.find(" < ")!= string::npos){
+        boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( < )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+        PipeLine.push_back(new ReadFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+     }
+     else{
+       //if no file output push command to list
+       PipeLine.push_back(new Command(tempSplitPipe));
+     }
+   }
+  }
+  //this->PipeLine now has a sequential array with all the correctly parsed objects
+  //now we just need to do the pipe logic here....
 
   vector<string> parsed;
   vector<char*> arguments;
@@ -59,11 +92,7 @@ void Command::parse(std::string toParse){
    this->args[arguments.size()-num_spaces] = NULL;
 }
 
-bool Command::execute(){
-  this->execute(0,1);
-}
-
-bool Command::execute( int fdInput, int fdOutput) {
+bool Command::execute() {
   parse(this->executable);
   if (args[0]==NULL){
     //no arg
