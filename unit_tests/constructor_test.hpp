@@ -8,7 +8,9 @@
 #include "../src/Or.cpp"
 #include "../src/Paren.cpp"
 #include "../src/Executer.cpp"
-
+#include "../src/WriteFile.cpp"
+#include "../src/WriteFileAppend.cpp"
+#include "../src/ReadFile.cpp"
 
 TEST(ConstructorTest, Command){
     RBase* test = new Command("ls");
