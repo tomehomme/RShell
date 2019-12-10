@@ -7,13 +7,13 @@
 class ReadFile : public Connector{
   public:
     string filename;
-    int fdInput;
-    int fdOutput;
+    int fdInput = 0;
+    int fdOutput = 1;
 
     ReadFile(RBase* left, string right);
     ReadFile();
 
-    virtual bool execute();
+    virtual bool execute(int fdInput = 0, int fdOutput = 1);
     virtual void parse(string); 
     virtual void print();
 };

@@ -17,9 +17,9 @@ void Paren::parse(string s){
 }
 
 
-bool Paren::execute(){
+bool Paren::execute(int fdInput,int fdOutput){
   //will call left (the Executer's) execute
-   return this->left->execute();
+   return this->left->execute(fdInput, fdOutput);
 }
 
 void Paren::print(){

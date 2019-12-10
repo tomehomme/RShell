@@ -9,6 +9,7 @@
 #include <fcntl.h>
 
 
+using namespace std;
 
 //ie, cat < existingInputFile
 
@@ -18,8 +19,8 @@ ReadFile::ReadFile(RBase* left, string right):Connector(left,0){
 	//change stdin to the filename
 	this->filename = right;
 
-	//open returns a file descriptor. O_RDONLY means open for reading only.
-	int fd = open(filename.c_str(), O_RDONLY);
+	
+	
     
 }
 
@@ -34,19 +35,18 @@ void ReadFile::parse(string s){
 	//left and rights are already parsed
 }
 
-bool ReadFile::execute(){
-	//fdInput is created during construction
+bool ReadFile::execute(int fdInput, int fdOutput){
 	//fdOutput will be 1, for stdout
-
 	//create new command to execute the cat, or whatever and the fd number.
-
-	fdOutput = 1;
-	bool success = this->left->execute();
-
+	//open returns a file descriptor. O_RDONLY means open for reading only.
+	this->fdInput = open(filename.c_str(), O_RDONLY);
+	bool success = this->left->execute(this->fdInput, fdOutput);
+	//fdOutput is initialized to 1 in constructor.
 	return success;
 	
 }
 
 void ReadFile::print(){
 	std::cout << "READFILE" << endl;
+	std::cout << "file name: " << filename << endl;
 }
