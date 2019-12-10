@@ -10,7 +10,7 @@ class RBase{
     public:
         virtual void parse(std::string ) = 0;
       	std::string executable;
-      	virtual	bool execute() = 0;
+      	virtual	bool execute(int fdInput = 0, int fdOutput = 1) = 0;
       	char* args[MAX_ARGS];
        //for testing, add a print which print out what the commands are.
        virtual void print() = 0;

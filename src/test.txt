@@ -221,14 +221,14 @@ void Executer::parse(std::string toParse) {
   return ;
 }
 
-bool Executer::execute(int fdInput, int fdOutput) {
+bool Executer::execute() {
   bool success = true;
 
   for (int i = 0; i + 1 < commandList.size(); i++) {
-    this->commandList.at(i)->execute(fdInput, fdOutput);
+    this->commandList.at(i)->execute();
   }
 
-  success = commandList.at(commandList.size()-1)->execute(fdInput, fdOutput);
+  success = commandList.at(commandList.size()-1)->execute();
   commandList.clear();
 
   return success;

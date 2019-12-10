@@ -62,7 +62,9 @@ void Command::parse(std::string toParse){
        PipeLine.push_back(new Command(tempSplitPipe));
      }
    }
-  } else{
+  }
+  //now check for > >> <
+  else{
       string strippedTemp = boost::regex_replace(toParse,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
      if(strippedTemp.find(" > ") != string::npos){
       //push correct file output connector with filename 
@@ -79,34 +81,60 @@ void Command::parse(std::string toParse){
   }
   //this->PipeLine now has a sequential array with all the correctly parsed objects
   //now we just need to do the pipe logic here....
-
-  vector<string> parsed;
-  vector<char*> arguments;
-  //vector parsed holds all the arguments
-  boost::algorithm::split_regex(parsed, toParse, boost::regex(" (?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-  for(string par : parsed){
-      boost::regex expression2 {"(?<!\\\\)\""};
-      par = boost::regex_replace(par, expression2, format);
-      char * charCopy = new char [par.length()+1];
-      strcpy (charCopy, par.c_str());
-      arguments.push_back(charCopy);
+ 
+  if (PipeLine.size() > 0){
+    cout << "PIPING" << endl;
+    for (unsigned i = 0; i < PipeLine.size(); i ++){
+      if (dynamic_cast <WriteFile*> (PipeLine.at(i))){
+        //cout << "WriteFile >" << endl;
+        PipeLine.at(i)->print();
+        PipeLine.at(i)->execute(0,1);
+      }
+      if (dynamic_cast <WriteFileAppend*> (PipeLine.at(i))){
+         //cout << "WriteFileAppend >>" << endl;
+         PipeLine.at(i)->print();
+         PipeLine.at(i)->execute(0,1);
+      }
+      if (dynamic_cast <ReadFile*> (PipeLine.at(i))){
+         //cout << "ReadFile <" << endl;
+         PipeLine.at(i)->print();
+         PipeLine.at(i)->execute(0,1);
+      }
+    }
+    //handles piping completely differently.
+    this->args[0] = NULL;
   }
 
-  //remove space??
-  int num_spaces = 0;
-   for (unsigned i = 0; i < arguments.size(); i++) {
-    if (string(arguments.at(i)) == "\0"){
-         num_spaces++;
-       }
-      else if (arguments.at(i)[0] != '\0'){ //remove spaces
-         this->args[i] = arguments.at(i);
-       }
+  //no input redirection/output redirection.
+  else if (PipeLine.size() == 0){
+      vector<string> parsed;
+      vector<char*> arguments;
+      //vector parsed holds all the arguments
+      boost::algorithm::split_regex(parsed, toParse, boost::regex(" (?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+      for(string par : parsed){
+          boost::regex expression2 {"(?<!\\\\)\""};
+          par = boost::regex_replace(par, expression2, format);
+          char * charCopy = new char [par.length()+1];
+          strcpy (charCopy, par.c_str());
+          arguments.push_back(charCopy);
+      }
 
+      //remove space??
+      int num_spaces = 0;
+      for (unsigned i = 0; i < arguments.size(); i++) {
+        if (string(arguments.at(i)) == "\0"){
+            num_spaces++;
+          }
+          else if (arguments.at(i)[0] != '\0'){ //remove spaces
+            this->args[i] = arguments.at(i);
+          }
+
+      }
+      this->args[arguments.size()-num_spaces] = NULL;
    }
-   this->args[arguments.size()-num_spaces] = NULL;
 }
-
-bool Command::execute() {
+//(fdInput, fdOutput)
+bool Command::execute(int fdInput, int fdOutput) {
   parse(this->executable);
   if (args[0]==NULL){
     //no arg
@@ -127,6 +155,16 @@ bool Command::execute() {
   }
   // Child process, calls execvp()
   if (pid == 0) {
+	if (dup2(fdInput,0) == -1) {
+		perror("dup");
+		exit(1);
+	}
+	if (dup2(fdOutput,1) == -1){
+		perror("dup");
+		exit(1);
+	}
+
+
     //args[0] is the command
     if (execvp(args[0], args) == -1) {
       //if returns, then this means somehting failed, maybe not a real command

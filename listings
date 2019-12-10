@@ -1,0 +1,25 @@
+total 2444
+drwxr-xr-x 13 phom001 csmajs    4096 Dec 10 14:12 .
+drwxr-xr-x  3 phom001 csmajs    4096 Dec  2 16:38 ..
+drwxr-xr-x  2 phom001 csmajs    4096 Dec  2 18:13 bin
+-rw-r--r--  1 phom001 csmajs   21959 Dec  2 18:13 CMakeCache.txt
+drwxr-xr-x  6 phom001 csmajs    4096 Dec 10 14:11 CMakeFiles
+-rw-r--r--  1 phom001 csmajs    1732 Dec  2 18:13 cmake_install.cmake
+-rw-r--r--  1 phom001 csmajs     565 Dec 10 12:58 CMakeLists.txt
+drwxr-xr-x  9 phom001 csmajs    4096 Dec 10 12:40 .git
+-rw-r--r--  1 phom001 csmajs     376 Dec  2 16:38 .gitignore
+-rw-r--r--  1 phom001 csmajs      92 Dec  2 16:38 .gitmodules
+drwxr-xr-x  6 phom001 csmajs    4096 Dec 10 13:01 googletest
+drwxr-xr-x  2 phom001 csmajs    4096 Dec 10 13:39 header
+drwxr-xr-x  2 phom001 csmajs    4096 Dec  2 16:38 images
+drwxr-xr-x  2 phom001 csmajs    4096 Dec  2 16:38 integration_tests
+drwxr-xr-x  2 phom001 csmajs    4096 Dec  2 18:14 lib
+-rw-------  1 phom001 csmajs       0 Dec 10 14:12 listings
+-rw-r--r--  1 phom001 csmajs    8747 Dec 10 13:01 Makefile
+-rw-r--r--  1 phom001 csmajs      81 Dec 10 14:08 names.txt
+drwxr-xr-x  2 phom001 csmajs    4096 Dec  2 20:08 prototype
+-rw-r--r--  1 phom001 csmajs    6232 Dec  2 16:38 README.md
+-rwxr-xr-x  1 phom001 csmajs  560432 Dec 10 14:11 rshell
+drwxr-xr-x  2 phom001 csmajs    4096 Dec 10 14:02 src
+-rwxr-xr-x  1 phom001 csmajs 1819792 Dec 10 12:26 test
+drwxr-xr-x  2 phom001 csmajs    4096 Dec 10 10:34 unit_tests

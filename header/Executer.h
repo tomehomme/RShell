@@ -15,7 +15,7 @@ class Executer : public RBase{
         //It then stores the new Command into commandList.
         virtual void parse(std::string toParse);
 
-        virtual bool execute();
+        virtual bool execute(int fdInput = 0, int fdOutput = 1);
 
         virtual void print();
 };
