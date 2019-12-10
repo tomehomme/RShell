@@ -22,7 +22,8 @@ void WriteFileAppend::parse(string s){}
 
 bool WriteFileAppend::execute(int fdInput, int fdOutput){
 	//means, write only, append, and create if not existing
-	this->fdOutput = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT);
+	//S_IRUSR allows user to read
+	this->fdOutput = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT, S_IRUSR);
 	bool success = left->execute(0,this->fdOutput);
 	return success;
 }

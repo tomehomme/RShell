@@ -155,7 +155,9 @@ bool Command::execute(int fdInput, int fdOutput) {
   }
   // Child process, calls execvp()
   if (pid == 0) {
+    //basically the same as dup(), but we are using the fd from our fdInput. (less need for extra steps like closing)
 	if (dup2(fdInput,0) == -1) {
+    //if the return value is -1 then this means there was an error!
 		perror("dup");
 		exit(1);
 	}
