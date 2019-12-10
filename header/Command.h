@@ -14,6 +14,7 @@ class Command : public RBase{
         virtual void parse(std::string toParse);
         Command(std::string com);
         bool Test();
+        vector <RBase*> PipeLine;
 	virtual void print();
 };      
 #endif // __COMMAND_H__
