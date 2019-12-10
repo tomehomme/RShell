@@ -5,11 +5,14 @@
 #include <boost/regex.hpp>
 
 #include "../header/ReadFile.h"
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 
 //ie, cat < existingInputFile
 
-ReadFile::ReadFile(RBase* left, string right):Connector(left,right){
+ReadFile::ReadFile(RBase* left, RBase* right):Connector(left,right){
 	//will be something like this->left = "cat" this->right = "existingInputFile"
 
 	//change stdin to the filename
