@@ -13,7 +13,6 @@
 #include "../header/And.h"
 #include "../header/Or.h"
 #include "../header/Paren.h"
-#include "../header/PipeLine.h"
 #include <queue>
 #include <stack>
 
@@ -94,7 +93,7 @@ void Executer::parse(std::string toParse) {
           commandList.push_back(new Executer(qParen.front()));
           qParen.pop();
         } else{
-          commandList.push_back(new PipeLine(splitSemi.at(i)));
+          commandList.push_back(new Command(splitSemi.at(i)));
         }
       }    
       return;
@@ -150,12 +149,12 @@ void Executer::parse(std::string toParse) {
       }
       //made an else statement for if it is not a PAREN keyword
       else{
-        PipeLine * cmd = nullptr;
+        Command * cmd = nullptr;
         Connector * con = nullptr;
         con = nullptr;
-        cmd = new PipeLine(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
+        cmd = new Command(splitSemi.at(i).substr(tempConMap.at(j).first, tempConMap.at(j).second - tempConMap.at(j).first));
 
-        if (tempConMap.at(j).first - 3 > 0) { 
+        if (tempConMap.at(j).first - 3 > 0) {
           con = getConnector( & splitSemi.at(i).at(tempConMap.at(j).first - 3));
           con->left = nullptr;
           con->right = nullptr;
