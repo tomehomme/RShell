@@ -41,7 +41,7 @@ bool ReadFile::execute(int fdInput, int fdOutput){
 	//create new command to execute the cat, or whatever and the fd number.
 
 	fdOutput = 1;
-	bool success = this->left->execute(fdInput, fdOutput);
+	bool success = this->left->execute();
 
 	return success;
 	

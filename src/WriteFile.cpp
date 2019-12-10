@@ -8,7 +8,7 @@
 
 WriteFile::WriteFile(RBase* left, string right):Connector(left,0){
     this->filename = right;
-}
+ }
 
 
 

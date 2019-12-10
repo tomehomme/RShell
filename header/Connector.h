@@ -10,7 +10,7 @@ class Connector : public RBase{
     RBase* right;
     Connector(){}
     Connector(RBase* left, RBase* right){this->left = left; this->right = right;}
-    virtual bool execute(int fdInput, int fdOutput) = 0;
+    virtual bool execute() = 0;
     virtual void parse(string) = 0;
     virtual void print() = 0;
     private:

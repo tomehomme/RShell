@@ -19,15 +19,15 @@ And::And(){
 
 void And::parse(string s){}
 
-bool And::execute( int fdInput, int fdOutput){
+bool And::execute(){
   //  cout << "We are in AND" << endl;
     //executes second statement only if the first one passes
-   if(!this->left->execute(fdInput,fdOutput)){
+   if(!this->left->execute()){
         return false;
     }
     //if first command passes, then execute second one -- return if the second one passes.
     else{
-        return this->right->execute(fdInput,fdOutput);
+        return this->right->execute();
     }
 }
 

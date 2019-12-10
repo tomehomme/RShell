@@ -10,7 +10,7 @@ class Paren : public Connector{
       Paren(RBase* left, RBase* right):Connector(left,nullptr){}
       Paren();
       
-      virtual bool execute( int fdInput, int fdOutput);
+      virtual bool execute();
       virtual void parse(string); 
       virtual void print();
 };

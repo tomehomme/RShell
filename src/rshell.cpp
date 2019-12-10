@@ -15,6 +15,7 @@
 #include "Paren.cpp"
 #include "Executer.cpp"
 #include "Pipe.cpp"
+#include "PipeLine.cpp"
 #include "ReadFile.cpp"
 #include "WriteFile.cpp"
 #include "WriteFileAppend.cpp"
@@ -50,7 +51,7 @@ int main(){
         if(boost::regex_replace(inputs,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "") != ""){
                 if(balancedParenthesis(boost::regex_replace(inputs,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, ""))){
                     Executer* execute = new Executer(inputs);
-                    execute->execute(0,1);
+                    execute->execute();
                 } else {
                     cout << "Unbalanced parenthesis" << endl;
             }

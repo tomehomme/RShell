@@ -10,7 +10,8 @@ class Command : public RBase{
         char* args[MAX_ARGS]; 
         //splits up input by quotes and space 
         //to populate the executable name and an array of arguments.
-        virtual bool  execute(int fdInput, int fdOutput); 
+        virtual bool  execute(int fdInput, int fdOutput);
+        virtual bool  execute(); 
         virtual void parse(std::string toParse);
         Command(std::string com);
         bool Test();
