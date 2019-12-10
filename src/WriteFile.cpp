@@ -6,9 +6,8 @@
 //#include "../header/RBase.h"
 #include "../header/WriteFile.h"
 
-WriteFile::WriteFile(RBase* left, RBase* right):Connector(left,right){
-
-    
+WriteFile::WriteFile(RBase* left, string right):Connector(left,0){
+    this->filename = right;
 }
 
 

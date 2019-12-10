@@ -6,8 +6,9 @@
 
 class WriteFileAppend : public Connector{
   public:
-    
-    WriteFileAppend(RBase* left, RBase* right);
+    string filename;
+
+    WriteFileAppend(RBase* left, string right);
     WriteFileAppend();
 
     virtual bool execute(int fdInput, int fdOutput);

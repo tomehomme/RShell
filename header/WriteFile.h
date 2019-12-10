@@ -6,8 +6,9 @@
 
 class WriteFile : public Connector{
   public:
-    
-    WriteFile(RBase* left, RBase* right);
+    string filename;
+
+    WriteFile(RBase* left, string right);
     WriteFile();
 
     virtual bool execute( int fdInput, int fdOutput);

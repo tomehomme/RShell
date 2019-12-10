@@ -6,8 +6,9 @@
 
 class ReadFile : public Connector{
   public:
-    
-    ReadFile(RBase* left, RBase* right);
+    string filename;
+
+    ReadFile(RBase* left, string right);
     ReadFile();
 
     virtual bool execute(int fdInput, int fdOutput);

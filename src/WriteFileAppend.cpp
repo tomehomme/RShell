@@ -6,8 +6,8 @@
 
 #include "../header/WriteFileAppend.h"
 
-WriteFileAppend::WriteFileAppend(RBase* left, RBase* right):Connector(left,right){
-
+WriteFileAppend::WriteFileAppend(RBase* left, string right):Connector(left,0){
+    this->filename = right;
     
 }
 

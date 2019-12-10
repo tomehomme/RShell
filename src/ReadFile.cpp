@@ -12,14 +12,14 @@
 
 //ie, cat < existingInputFile
 
-ReadFile::ReadFile(RBase* left, RBase* right):Connector(left,right){
+ReadFile::ReadFile(RBase* left, string right):Connector(left,0){
 	//will be something like this->left = "cat" this->right = "existingInputFile"
 
 	//change stdin to the filename
-	string file = this->right->executable;
+	this->filename = right;
 
 	//open returns a file descriptor. O_RDONLY means open for reading only.
-	int fd = open(file.c_str(), O_RDONLY);
+	int fd = open(filename.c_str(), O_RDONLY);
     
 }
 
