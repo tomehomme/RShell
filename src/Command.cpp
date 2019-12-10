@@ -43,7 +43,7 @@ void Command::parse(std::string toParse){
   vector<string> splitPipe;
   vector<string> splitOutput;
   if(strippedquotes.find("|") != string::npos){
-    boost::algorithm::split_regex(splitPipe, toParse, boost::regex("( \\| )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+  boost::algorithm::split_regex(splitPipe, toParse, boost::regex("( \\| )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
    for(string tempSplitPipe : splitPipe){
     string strippedTemp = boost::regex_replace(tempSplitPipe,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
      if(strippedTemp.find(" > ") != string::npos){
@@ -62,6 +62,20 @@ void Command::parse(std::string toParse){
        PipeLine.push_back(new Command(tempSplitPipe));
      }
    }
+  } else{
+      string strippedTemp = boost::regex_replace(toParse,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
+     if(strippedTemp.find(" > ") != string::npos){
+      //push correct file output connector with filename 
+      boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( > )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+      PipeLine.push_back(new WriteFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+     } else if(strippedTemp.find(" >> ") != string::npos){
+        boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( >> )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+        PipeLine.push_back(new WriteFileAppend(new Command(splitOutput.at(0)),splitOutput.at(1)));
+     } else if (strippedTemp.find(" < ")!= string::npos){
+        boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( < )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+        PipeLine.push_back(new ReadFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+     }
+
   }
   //this->PipeLine now has a sequential array with all the correctly parsed objects
   //now we just need to do the pipe logic here....
