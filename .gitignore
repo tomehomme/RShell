@@ -44,4 +44,5 @@ cmake_install.cmake
 
 .vscode/
 
+newOutputFile2
 append

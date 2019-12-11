@@ -15,6 +15,7 @@
 #include <array>
 #include <sys/stat.h>
 #include <time.h>
+#include <queue>
 #include <stdio.h>
 
 
@@ -80,52 +81,94 @@ void Command::parse(std::string toParse){
 
   }
   //this->PipeLine now has a sequential array with all the correctly parsed objects
-  //now we just need to do the pipe logic here....
- 
+
+
+
  //we will only do piping logic if there are actual pipes (or ioredirection) in our command!
-  if (PipeLine.size() > 0){
+ if (PipeLine.size() == 1){
+   //base case: only one thing (ioredirection)
+   PipeLine.at(0)->execute(0,1);
+   this->args[0] = NULL;
+ }
+
+  else if (PipeLine.size() > 1) {
+    //pipe always will have more than 1 arg
     cout << "PIPING" << endl;
-    for (unsigned i = 0; i+1 < PipeLine.size(); i ++){
+    //used if there are more than one pipes
+    bool canExecute = false;
+    for (unsigned i = 0; i + 1 < PipeLine.size(); i++){
+      //PIPING LOGIC
       if (dynamic_cast <Command*> (PipeLine.at(i))){
         cout << "Pipe |" << endl;
         PipeLine.at(i)->print(); cout << endl;
-        if (dynamic_cast <Command*> (PipeLine.at(i+1))){
-          //means that say it was cat test.txt | tr A-Z a-z, where "tr A-Z a-z" is PipeLine.at(i+1)
-          int fds[2]; //need a fds of 2
-          int fail = pipe(fds); //we pipe the array, RD -> fds[0], WR -> fds[1]
-          if (fail == -1){
-            //return of -1 means pipe failed
-            perror("pipe");
-            exit(1);
+        
+          if (dynamic_cast<Command*> (PipeLine.at(i+1))){
+            //means that say it was cat test.txt | tr A-Z a-z, where "tr A-Z a-z" is PipeLine.at(i+1)
+            int fds[2]; //need a fds of 2
+            int fail = pipe(fds); //we pipe the array, RD -> fds[0], WR -> fds[1]. ie, input(0) output(1)
+            if (fail == -1){
+              //return of -1 means pipe failed
+              perror("pipe");
+              exit(1);
+            }
+      
+            //apparently pipes run concurrently?
+            //we will go ahead and run our pipe commands, with the specified fds
+          
+            if (!PipeLine.at(i)->execute(0, fds[1])){
+              perror("pipe");
+            }
+
+            close(fds[1]);
+         
+         
+           if (!PipeLine.at(i+1)->execute(fds[0], 1)){
+             perror("pipe");
+           }
+
+            close(fds[0]);
+         
+           //means there may be more pipes
+           canExecute = false;
           }
-          //apparently pipes run concurrently?
-          //we will go ahead and run our pipe commands, with the specified fds
-          PipeLine.at(i)->execute(0, fds[1]);
-          close(fds[1]);
-          PipeLine.at(i+1)->execute(fds[0],1);
-          close(fds[0]);
+        
+        else {
+          //means there are no more pipes, so we can do out ioredirection
+          cout << "can execute" << endl;
+          canExecute = true;
+        }
+          
+      }
+
+
+      //if the previous index were an ioredirection
+      //doesnt work with pipes yet. need to keep track of where we find the redirection
+      if (canExecute){ 
+         if (dynamic_cast <WriteFile*> (PipeLine.at(i-1))){
+          //wait for pipes to complete
+          PipeLine.at(i)->print(); cout << endl;
+          PipeLine.at(i)->execute(0,1);
+        }
+        else if (dynamic_cast <WriteFileAppend*> (PipeLine.at(i-1))){
+          //wait for pipes to complete
+          PipeLine.at(i)->print(); cout << endl;
+          PipeLine.at(i)->execute(0,1);
+        }
+        else if (dynamic_cast <ReadFile*> (PipeLine.at(i-1))){
+          //wait for pipes to complete
+  
+          PipeLine.at(i)->print(); cout << endl;
+          PipeLine.at(i)->execute(0,1);
         }
       }
-      else if (dynamic_cast <WriteFile*> (PipeLine.at(i))){
-        //cout << "WriteFile >" << endl;
-        PipeLine.at(i)->print(); cout << endl;
-        PipeLine.at(i)->execute(0,1);
-      }
-      else if (dynamic_cast <WriteFileAppend*> (PipeLine.at(i))){
-         //cout << "WriteFileAppend >>" << endl;
-         PipeLine.at(i)->print(); cout << endl;
-         PipeLine.at(i)->execute(0,1);
-      }
-      else if (dynamic_cast <ReadFile*> (PipeLine.at(i))){
-         //cout << "ReadFile <" << endl;
-         PipeLine.at(i)->print(); cout << endl;
-         PipeLine.at(i)->execute(0,1);
-      }
     }
+   
     // handles piping completely different -- we will do everything in our Command::parse() function,
     // and not do anything in execute! so we will set args[0] = NULL (for segfault handling)
     this->args[0] = NULL;
+    return;
   }
+    
 
   //no input redirection/output redirection.
   else if (PipeLine.size() == 0){
