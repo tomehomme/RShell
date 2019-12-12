@@ -13,10 +13,18 @@ class Command : public RBase{
         virtual bool  execute(int fdInput = 0, int fdOutput = 1); 
         virtual void parse(std::string toParse);
         Command(std::string com);
+        //option: output / input override.
+        // 1 : write output to filename
+        // 2 : write output appended to filename
+        // 3 : read input from filename
+        Command(std::string par, int option, std::string filename);
+        int option;
+        std::string filename;
         bool Test();
         vector <RBase*> PipeLine;
         bool hasPrevCmd=0;
         bool hasNextCmd=0;
+        int fileDesc=0;
         int oFds[2];
         int cFds[2];
 	virtual void print();

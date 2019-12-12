@@ -17,6 +17,8 @@
 #include <time.h>
 #include <queue>
 #include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 
 
@@ -25,7 +27,11 @@ using namespace std;
 Command::Command(std::string com) {
   this->executable = com;
 }
-
+Command::Command(std::string com, int option, string filename) {
+  this->executable = com;
+  this->option = option;
+  this->filename = filename;
+}
 void Command::parse(std::string toParse){
   boost::regex expression {
     "#([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$"
@@ -50,13 +56,13 @@ void Command::parse(std::string toParse){
      if(strippedTemp.find(" > ") != string::npos){
       //push correct file output connector with filename 
       boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( > )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-      PipeLine.push_back(new WriteFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+      PipeLine.push_back(new Command(splitOutput.at(0),1,splitOutput.at(1)));
      } else if(strippedTemp.find(" >> ") != string::npos){
         boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( >> )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-        PipeLine.push_back(new WriteFileAppend(new Command(splitOutput.at(0)),splitOutput.at(1)));
+      PipeLine.push_back(new Command(splitOutput.at(0),2,splitOutput.at(1)));
      } else if (strippedTemp.find(" < ")!= string::npos){
         boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( < )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-        PipeLine.push_back(new ReadFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+      PipeLine.push_back(new Command(splitOutput.at(0),3,splitOutput.at(1)));
      }
      else{
        //if no file output push command to list
@@ -70,13 +76,13 @@ void Command::parse(std::string toParse){
      if(strippedTemp.find(" > ") != string::npos){
       //push correct file output connector with filename 
       boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( > )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-      PipeLine.push_back(new WriteFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+      PipeLine.push_back(new Command(splitOutput.at(0),1,splitOutput.at(1)));
      } else if(strippedTemp.find(" >> ") != string::npos){
         boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( >> )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-        PipeLine.push_back(new WriteFileAppend(new Command(splitOutput.at(0)),splitOutput.at(1)));
+        PipeLine.push_back(new Command(splitOutput.at(0),2,splitOutput.at(1)));
      } else if (strippedTemp.find(" < ")!= string::npos){
         boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( < )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
-        PipeLine.push_back(new ReadFile(new Command(splitOutput.at(0)),splitOutput.at(1)));
+        PipeLine.push_back(new Command(splitOutput.at(0),3,splitOutput.at(1)));
      }
 
   }
@@ -92,86 +98,49 @@ void Command::parse(std::string toParse){
    PipeLine.at(0)->execute(0,1);
    this->args[0] = NULL;
  }
-
   else if (PipeLine.size() > 1) {
-    int numPipes = 0;
-      for (int i = 0; i < PipeLine.size(); i++){
-        if (dynamic_cast <Command*> (PipeLine.at(i))){
-          numPipes++;
-        }
-      }
-    bool canExecute = false;
-    
     for (unsigned i = 0; i < PipeLine.size(); i++){
-      if (dynamic_cast <Command*> (PipeLine.at(i))){
-          if (dynamic_cast<Command*> (PipeLine.at(i))){
-            numPipes--;
-            //means that say it was cat test.txt | tr A-Z a-z, where "tr A-Z a-z" is PipeLine.at(i+1)
-            int fds[2]; //need a fds of 2
-            int fail = pipe(fds); //we pipe the array, RD -> fds[0], WR -> fds[1]. ie, input(0) output(1)
-            fdslist.push_back(fds[0]);
-            fdslist.push_back(fds[1]);
-            if (fail == -1){
-              //return of -1 means pipe failed
-              perror("pipe");
-              exit(1);
-            }
-              dynamic_cast<Command*> (PipeLine.at(i))->oFds[0] = lastInput;
-              dynamic_cast<Command*> (PipeLine.at(i))->oFds[1] = lastOutput;
-              dynamic_cast<Command*> (PipeLine.at(i))->cFds[0] = fds[0];
-              dynamic_cast<Command*> (PipeLine.at(i))->cFds[1] = fds[1];
-            //if not first, dup2 the last output stream into stdin current input 
-            if(i == 0){
-              dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = false;
-              dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
-              if (!PipeLine.at(i)->execute(0, fds[1])){
-                perror("pipe");
-              }
-            } else if(i != PipeLine.size()-1){
-              dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
-              dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
+        if (dynamic_cast<Command*> (PipeLine.at(i))){
+          //means that say it was cat test.txt | tr A-Z a-z, where "tr A-Z a-z" is PipeLine.at(i+1)
+          int fds[2]; //need a fds of 2
+          int fail = pipe(fds); //we pipe the array, RD -> fds[0], WR -> fds[1]. ie, input(0) output(1)
+          fdslist.push_back(fds[0]);
+          fdslist.push_back(fds[1]);
+          if (fail == -1){
+            //return of -1 means pipe failed
+            perror("pipe");
+            exit(1);
+          }
 
-              if (!PipeLine.at(i)->execute(lastInput, fds[1])){
-                perror("pipe");
-              }
-            } else{
-                dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
-                dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = false;
-                if (!PipeLine.at(i)->execute(lastInput, 1)){
-                perror("pipe");
-              }
+          dynamic_cast<Command*> (PipeLine.at(i))->oFds[0] = lastInput;
+          dynamic_cast<Command*> (PipeLine.at(i))->oFds[1] = lastOutput;
+          dynamic_cast<Command*> (PipeLine.at(i))->cFds[0] = fds[0];
+          dynamic_cast<Command*> (PipeLine.at(i))->cFds[1] = fds[1];
+          //if not first, dup2 the last output stream into stdin current input 
+          if(i == 0){
+            dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = false;
+            dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
+            if (!PipeLine.at(i)->execute(0, fds[1])){
+              perror("pipe");
             }
-                     
-            lastOutput = fds[1];
-            lastInput = fds[0];
-          }  
-        }
-       else {
-            pipeIndex = i;
-       }
-         if (numPipes == 0){
-            cout << "finished pipes" << endl;
-            canExecute = true;
+          } else if(i != PipeLine.size()-1){
+            dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
+            dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
+
+            if (!PipeLine.at(i)->execute(lastInput, fds[1])){
+              perror("pipe");
+            }
+          } else{
+              dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
+              dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = false;
+              if (!PipeLine.at(i)->execute(lastInput, 1)){
+              perror("pipe");
+            }
           } 
-        if (canExecute){
-          if (dynamic_cast<WriteFile*>(PipeLine.at(pipeIndex))){
-            cout << "write" << endl;
-            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 1);
-          }
-          if (dynamic_cast<WriteFileAppend*>(PipeLine.at(pipeIndex))){
-            cout << "write append" << endl;
-            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 1);
-          }
-          if (dynamic_cast<ReadFile*>(PipeLine.at(pipeIndex))){
-            cout << "start read" << endl;
-            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[0], 1);
-            cout << "finsih" << endl;
-          }
-          
-        }
-      
+          lastOutput = fds[1];
+          lastInput = fds[0];
+        }  
     }
-   
     // handles piping completely different -- we will do everything in our Command::parse() function,
     // and not do anything in execute! so we will set args[0] = NULL (for segfault handling)
     this->args[0] = NULL;
@@ -220,6 +189,10 @@ bool Command::execute(int fdInput, int fdOutput) {
   if (string(args[0]) == "test" || string(args[0]) == "["){
     return this->Test();
   }
+  int filedesc;
+
+
+
   //convert input into char*[] for execvp(args[0],args)
   pid_t pid = fork(); //child process. fork returns pid_t of process
   int status; //to see when status changes      
@@ -235,7 +208,28 @@ bool Command::execute(int fdInput, int fdOutput) {
     //basically the same as dup(), but we are using the fd from our fdInput. (less need for extra steps like closing)
 
     if(hn == 1 || hp == 1){
+          switch (this->option)
+          {
+          case 1:
+            fileDesc = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            dup2(fileDesc, fdOutput);
+            close(fileDesc);
+            break;
+          case 2:
+            fileDesc = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            dup2(fileDesc, fdOutput);
+            close(fileDesc);
+            break;
+          case 3:
+            fileDesc = open(filename.c_str(), O_RDONLY);
+            dup2(fileDesc, fdInput);
+            close(fileDesc);
+            break;
+          default:
+            break;
+          }
     if(hp){
+      
       if (dup2(fdInput,0) == -1) {
         //if the return value is -1 then this means there was an error!
         perror("dup");
@@ -253,6 +247,20 @@ bool Command::execute(int fdInput, int fdOutput) {
       close(fdOutput);
     }
     } else{
+        switch (this->option)
+          {
+          case 1:
+            fdOutput = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            break;
+          case 2:
+            fdOutput = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            break;
+          case 3:
+            fdInput = open(filename.c_str(), O_RDONLY);
+            break;
+          default:
+            break;
+          }
       if (dup2(fdOutput,1) == -1){
         perror("dup");
         exit(1);
@@ -263,9 +271,6 @@ bool Command::execute(int fdInput, int fdOutput) {
         exit(1);
       } 
     }
-
-
-
 
     //args[0] is the command
     if (execvp(args[0], args) == -1) {
