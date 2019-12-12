@@ -15,6 +15,10 @@ class Command : public RBase{
         Command(std::string com);
         bool Test();
         vector <RBase*> PipeLine;
+        bool hasPrevCmd=0;
+        bool hasNextCmd=0;
+        int oFds[2];
+        int cFds[2];
 	virtual void print();
 };      
 #endif // __COMMAND_H__

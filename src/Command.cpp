@@ -114,16 +114,28 @@ void Command::parse(std::string toParse){
               perror("pipe");
               exit(1);
             }
+              dynamic_cast<Command*> (PipeLine.at(i))->oFds[0] = lastInput;
+              dynamic_cast<Command*> (PipeLine.at(i))->oFds[1] = lastOutput;
+              dynamic_cast<Command*> (PipeLine.at(i))->cFds[0] = fds[0];
+              dynamic_cast<Command*> (PipeLine.at(i))->cFds[1] = fds[1];
             //if not first, dup2 the last output stream into stdin current input 
             if(i == 0){
+              dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = false;
+              dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
               if (!PipeLine.at(i)->execute(0, fds[1])){
                 perror("pipe");
               }
             } else if(i != PipeLine.size()-1){
+              dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
+              dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
+
               if (!PipeLine.at(i)->execute(lastInput, fds[1])){
                 perror("pipe");
               }
             } else{
+                dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
+                dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = false;
+
                 if (!PipeLine.at(i)->execute(lastInput, 1)){
                 perror("pipe");
               }
@@ -131,6 +143,7 @@ void Command::parse(std::string toParse){
                      
             lastOutput = fds[1];
             lastInput = fds[0];
+  
            //means there may be more pipes
            canExecute = false;
           }
@@ -223,18 +236,44 @@ bool Command::execute(int fdInput, int fdOutput) {
     perror("fork");
     exit(1);
   }
+  bool hn = this->hasNextCmd;
+  bool hp = this->hasPrevCmd;
+
   // Child process, calls execvp()
   if (pid == 0) {
     //basically the same as dup(), but we are using the fd from our fdInput. (less need for extra steps like closing)
-	if (dup2(fdInput,0) == -1) {
-    //if the return value is -1 then this means there was an error!
-		perror("dup");
-		exit(1);
-	}
-	if (dup2(fdOutput,1) == -1){
-		perror("dup");
-		exit(1);
-	}
+
+    if(hn == 1 || hp == 1){
+    if(hp){
+      if (dup2(fdInput,0) == -1) {
+        //if the return value is -1 then this means there was an error!
+        perror("dup");
+        exit(1);
+      } 
+      close(fdInput);
+      close(oFds[1]);
+    }
+    if(hn){
+      close(this->cFds[0]);
+      if (dup2(fdOutput,1) == -1){
+        perror("dup");
+        exit(1);
+      }
+      close(fdOutput);
+    }
+    } else{
+      if (dup2(fdOutput,1) == -1){
+        perror("dup");
+        exit(1);
+      }
+      if (dup2(fdInput,0) == -1) {
+        //if the return value is -1 then this means there was an error!
+        perror("dup");
+        exit(1);
+      } 
+    }
+
+
 
 
     //args[0] is the command
@@ -245,7 +284,13 @@ bool Command::execute(int fdInput, int fdOutput) {
       //return false;
     }
   }
+
   if (pid > 0) { //parent
+
+    if(this->hasPrevCmd){
+      close(this->oFds[0]);
+      close(this->oFds[1]);
+    }
     pid_t w = waitpid(pid, & status, 0);
     //wait pid suspends execution, in this case parent, until children terminates.
     //"returns the process id of child whose state has changed"
