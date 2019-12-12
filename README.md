@@ -19,6 +19,9 @@ Our project will utilize a Composite Design pattern. In our composite, our base 
     - And: Inherited from Connector. Handles the && command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and passes.
     - Or: Inherited from Connector. Handles the || command. Only executes the second command (RBase* right) if the first command (RBase* left) executes and fails. 
     - Paren: Inherited from Connector. Handels the precedence () comamnd. Constructor has an RBase* left and RBase* right. Takes in an Executer* as it's left, and a nullpointer as its right. Will build a tree using the Executer* passed in, which allows us to create precedence during execution.
+    - WriteFile : Inherited from Connector. Handles the Write file redirection ie, the > command. Will write to a file given the inputs. If the file has not been created, will create the file with the specified name.
+    - WriteFileAppend : Inherited from Connector. Handles the Write Append file redirection ie, the >> command. Will append to a file given the inputs. If the file has not been created, will create the file with the specified name.
+    - ReadFile : Inherited from Connector. Handles the Read redirection ie, the < command. Will change the input from stinput to the given argument.
 
 
 Note: inheritance is denoted by indentation
