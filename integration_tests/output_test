@@ -1,6 +1,6 @@
-cat ls > file1
+cat pipes_test > file1
 cat single_command_tests | head -1 >> file1
 cat precedence_tests > file2
 cat pipes_test > file2
-ls > cat exit_command_tests > file3
+cat exit_command_tests | tr a-z A-Z > file3
 exit
