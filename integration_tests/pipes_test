@@ -10,4 +10,10 @@ cat < precedence_tests
 cat < input_test | tr A-Z a-z | head -5 | tail -3 | head -2 | tail -1
 cat precedence_tests | tr A-Z a-z | tee newOutputFile1
 cat output_test | grep output
+(cat output_test | grep output) && echo true
+cat oassdf && echo true
+(cat oassdf) && echo true
+(cat oassdf) || echo false
+cat asdfjksdf || echo false
+ls -l | more | head -5 || echo true
 exit

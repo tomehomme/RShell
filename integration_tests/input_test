@@ -4,4 +4,8 @@ cat < pipes_test | tr A-Z a-z |  tr a-z A-Z
 cat < pipes_test | tr A-Z a-z
 cat < pipes_test
 cat < input_test | cat pipes_test
+cat < sdjfklsf || echo false
+(cat < sjdlfkjsd) || echo false
+(cat < pipes_test | head -1) && echo true
+(cat < sjdkfjsdf) && echo true
 exit
