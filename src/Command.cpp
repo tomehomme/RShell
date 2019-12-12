@@ -1,8 +1,5 @@
 #include <iostream>
 #include "../header/Command.h"
-#include "../header/WriteFile.h"
-#include "../header/WriteFileAppend.h"
-#include "../header/ReadFile.h"
 
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
@@ -19,7 +16,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-
+#include <errno.h>
 
 
 using namespace std;
@@ -108,6 +105,7 @@ void Command::parse(std::string toParse){
           fdslist.push_back(fds[1]);
           if (fail == -1){
             //return of -1 means pipe failed
+            errno = 1;
             perror("pipe");
             exit(1);
           }
@@ -121,6 +119,7 @@ void Command::parse(std::string toParse){
             dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = false;
             dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
             if (!PipeLine.at(i)->execute(0, fds[1])){
+              errno = 1;
               perror("pipe");
             }
           } else if(i != PipeLine.size()-1){
@@ -128,12 +127,14 @@ void Command::parse(std::string toParse){
             dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
 
             if (!PipeLine.at(i)->execute(lastInput, fds[1])){
+              errno = 1;
               perror("pipe");
             }
           } else{
               dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
               dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = false;
               if (!PipeLine.at(i)->execute(lastInput, 1)){
+              errno = 1;
               perror("pipe");
             }
           } 
@@ -179,6 +180,10 @@ void Command::parse(std::string toParse){
 //(fdInput, fdOutput)
 bool Command::execute(int fdInput, int fdOutput) {
   parse(this->executable);
+   if (PipeLine.size() == 1){
+   //base case: only one thing (ioredirection)
+   return dynamic_cast<Command*> (PipeLine.at(0))->fileFailed;
+ }
   if (args[0]==NULL){
     //no arg
     return true;
@@ -189,7 +194,7 @@ bool Command::execute(int fdInput, int fdOutput) {
   if (string(args[0]) == "test" || string(args[0]) == "["){
     return this->Test();
   }
-  int filedesc;
+  fileDesc = 0;
 
 
 
@@ -212,17 +217,29 @@ bool Command::execute(int fdInput, int fdOutput) {
           {
           case 1:
             fileDesc = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            if(fileDesc == 0 || fileDesc == -1){
+              this->fileFailed = 1;
+              exit(1);
+            }
             dup2(fileDesc, fdOutput);
             close(fileDesc);
             break;
           case 2:
           //cout << "write >>" << endl;
             fileDesc = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP);
+            if(fileDesc == 0 || fileDesc == -1){
+              this->fileFailed = 1;
+              exit(1);
+            }
             dup2(fileDesc, fdOutput);
             close(fileDesc);
             break;
           case 3:
             fileDesc = open(filename.c_str(), O_RDONLY);
+            if(fileDesc == 0 || fileDesc == -1){
+              this->fileFailed = 1;
+              exit(1);
+            }
             dup2(fileDesc, fdInput);
             close(fileDesc);
             break;
@@ -248,17 +265,33 @@ bool Command::execute(int fdInput, int fdOutput) {
       close(fdOutput);
     }
     } else{
+      int tmpOld = 0;
         switch (this->option)
           {
           case 1:
+            tmpOld = fdOutput;
             //cout << "write >" << endl;
             fdOutput = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            if(fdOutput == -1 || fdOutput == tmpOld){
+              this->fileFailed = 1;
+              exit(1);
+            }
             break;
           case 2:
+            tmpOld = fdOutput;
             fdOutput = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP);
+            if(fdOutput == -1 || fdOutput == tmpOld){
+              this->fileFailed = 1;
+              exit(1);
+            }
             break;
           case 3:
+            tmpOld = fdInput;
             fdInput = open(filename.c_str(), O_RDONLY);
+            if(fdInput == -1 || fdInput == tmpOld){
+              this->fileFailed = 1;
+              exit(1);
+            }
             break;
           default:
             break;
@@ -282,14 +315,20 @@ bool Command::execute(int fdInput, int fdOutput) {
       //return false;
     }
   }
-
+    if(this->fileFailed){
+      return false;
+    }
   if (pid > 0) { //parent
 
     if(this->hasPrevCmd){
       close(this->oFds[0]);
       close(this->oFds[1]);
     }
+
     pid_t w = waitpid(pid, & status, 0);
+    if(this->fileFailed){
+      return false;
+    }
     //wait pid suspends execution, in this case parent, until children terminates.
     //"returns the process id of child whose state has changed"
     if (status == 0) {

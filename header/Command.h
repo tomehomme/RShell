@@ -22,6 +22,7 @@ class Command : public RBase{
         std::string filename;
         bool Test();
         vector <RBase*> PipeLine;
+        bool fileFailed=0;
         bool hasPrevCmd=0;
         bool hasNextCmd=0;
         int fileDesc=0;
