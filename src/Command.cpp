@@ -156,16 +156,16 @@ void Command::parse(std::string toParse){
         if (canExecute){
           if (dynamic_cast<WriteFile*>(PipeLine.at(pipeIndex))){
             cout << "write" << endl;
-            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[0], 1);
+            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 1);
           }
           if (dynamic_cast<WriteFileAppend*>(PipeLine.at(pipeIndex))){
             cout << "write append" << endl;
-            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[0], 1);
+            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 1);
           }
           if (dynamic_cast<ReadFile*>(PipeLine.at(pipeIndex))){
-            // cout << "start read" << endl;
-            // PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[0], 1);
-            // cout << "finsih" << endl;
+            cout << "start read" << endl;
+            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[0], 1);
+            cout << "finsih" << endl;
           }
           
         }
