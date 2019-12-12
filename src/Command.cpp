@@ -216,7 +216,8 @@ bool Command::execute(int fdInput, int fdOutput) {
             close(fileDesc);
             break;
           case 2:
-            fileDesc = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+          //cout << "write >>" << endl;
+            fileDesc = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP);
             dup2(fileDesc, fdOutput);
             close(fileDesc);
             break;
@@ -250,10 +251,11 @@ bool Command::execute(int fdInput, int fdOutput) {
         switch (this->option)
           {
           case 1:
+            //cout << "write >" << endl;
             fdOutput = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
             break;
           case 2:
-            fdOutput = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
+            fdOutput = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWUSR | S_IWGRP);
             break;
           case 3:
             fdInput = open(filename.c_str(), O_RDONLY);

@@ -9,7 +9,7 @@ TEST(WriteTest, Constructor){
     RBase* test = new WriteFile(new Command("cat"), "output.txt");
 }
 
-TEST(CommandTest, Execute){
+TEST(WriteTest, Execute){
     RBase* test =  new WriteFile(new Command("cat"), "output.txt");
     test->execute(0,1);
 }
