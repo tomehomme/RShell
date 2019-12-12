@@ -1,3 +1,7 @@
 cat < test_command_test.sh
 cat < pipes_test < exit_command_tests
+cat < pipes_test | tr A-Z a-z |  tr a-z A-Z
+cat < pipes_test | tr A-Z a-z
+cat < pipes_test
+cat < input_test | cat pipes_test
 exit

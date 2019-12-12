@@ -5,25 +5,30 @@
 
 
 
-TEST(AppendTest, Constructor){
-    RBase* test = new WriteFileAppend( new Command("cat names.txt"), "output.txt");
-    cout << endl;
-
+TEST(APPENDTest, Constructor){
+    Executer* test = new Executer("cat namex.txt >> NEWOUT");
 }
 
-TEST(CommandTest, Execute){
-    RBase* test =  new WriteFileAppend( new Command("cat names.txt"), "output.txt");
+TEST(APPENDTest, Execute){
+    RBase* test =  new Executer("cat names.txt >> NEWOUT");
+    test->execute(0,1);
+}
+
+TEST(APPENDTest, Piped){
+    RBase* test =  new Executer("cat names.txt | ls >>  NEWOUT");
     test->execute(0,1);
 }
 
 
-TEST(CommandTest, notRealArg){
-    RBase* test = new WriteFileAppend( new Command("NOTEREAL"), "output.txt") 
-    test>execute(0,1);
-
+TEST(APPENDTest, Piped2){
+    RBase* test =  new Executer("cat < names.txt | ls | head -3 >>  NEWOUT");
+    test->execute(0,1);
 }
 
+TEST(APPENDTest, Piped3){
+    RBase* test =  new Executer("cat names.txt | ls | head -3 | tail -2 >>  NEWOUT");
+    test->execute(0,1);
+}
 
-
-#endif
+#endif 
 

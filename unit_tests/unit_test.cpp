@@ -9,6 +9,8 @@
 #include "Paren_test.hpp"
 #include "test_test.hpp"
 #include "Write_test.hpp"
+#include "Append_test.hpp"
+#include "Read_test.hpp"
 
 int main(int argc, char** argv){
 

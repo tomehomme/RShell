@@ -3,4 +3,11 @@ echo hi | tr A-Z a-z
 ls -l | more
 cat precedence_tests | tr a-z A-Z | head -4 | tail -1
 ls -l | tr A-Z a-z | tr a-z A-Z | head -3
+cat precedence_tests | head -2 | tail -1
+ls -l | more 
+cat < precedence_tests | tr A-Z a-z |  tr a-z A-Z > newOutputFile2
+cat < precedence_tests
+cat < input_test | tr A-Z a-z | head -5 | tail -3 | head -2 | tail -1
+cat precedence_tests | tr A-Z a-z | tee newOutputFile1
+cat output_test | grep output
 exit
