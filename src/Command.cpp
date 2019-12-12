@@ -83,7 +83,8 @@ void Command::parse(std::string toParse){
   //this->PipeLine now has a sequential array with all the correctly parsed objects
 
 
-
+ int leftInput, rightOutput, lastInput, lastOutput = 0;
+ vector<int> fdslist;
  //we will only do piping logic if there are actual pipes (or ioredirection) in our command!
  if (PipeLine.size() == 1){
    //base case: only one thing (ioredirection)
@@ -93,47 +94,50 @@ void Command::parse(std::string toParse){
 
   else if (PipeLine.size() > 1) {
     //pipe always will have more than 1 arg
-    cout << "PIPING" << endl;
+    //cout << "PIPING" << endl;
     //used if there are more than one pipes
     bool canExecute = false;
-    for (unsigned i = 0; i + 1 < PipeLine.size(); i++){
+    for (unsigned i = 0; i < PipeLine.size(); i++){
       //PIPING LOGIC
       if (dynamic_cast <Command*> (PipeLine.at(i))){
-        cout << "Pipe |" << endl;
-        PipeLine.at(i)->print(); cout << endl;
+        //cout << "Pipe |" << endl;
+        //PipeLine.at(i)->print(); cout << endl;
         
-          if (dynamic_cast<Command*> (PipeLine.at(i+1))){
+          if (dynamic_cast<Command*> (PipeLine.at(i))){
             //means that say it was cat test.txt | tr A-Z a-z, where "tr A-Z a-z" is PipeLine.at(i+1)
             int fds[2]; //need a fds of 2
             int fail = pipe(fds); //we pipe the array, RD -> fds[0], WR -> fds[1]. ie, input(0) output(1)
+            fdslist.push_back(fds[0]);
+            fdslist.push_back(fds[1]);
             if (fail == -1){
               //return of -1 means pipe failed
               perror("pipe");
               exit(1);
             }
-      
-            //apparently pipes run concurrently?
-            //we will go ahead and run our pipe commands, with the specified fds
-          
-            if (!PipeLine.at(i)->execute(0, fds[1])){
-              perror("pipe");
+            //if not first, dup2 the last output stream into stdin current input 
+            if(i == 0){
+              if (!PipeLine.at(i)->execute(0, fds[1])){
+                perror("pipe");
+              }
+            } else if(i != PipeLine.size()-1){
+              if (!PipeLine.at(i)->execute(lastInput, fds[1])){
+                perror("pipe");
+              }
+            } else{
+                if (!PipeLine.at(i)->execute(lastInput, 1)){
+                perror("pipe");
+              }
             }
-
-            close(fds[1]);
-         
-         
-           if (!PipeLine.at(i+1)->execute(fds[0], 1)){
-             perror("pipe");
-           }
-
-            close(fds[0]);
-         
+                     
+            lastOutput = fds[1];
+            lastInput = fds[0];
            //means there may be more pipes
            canExecute = false;
           }
         
         else {
           //means there are no more pipes, so we can do out ioredirection
+          
           cout << "can execute" << endl;
           canExecute = true;
         }
@@ -161,6 +165,7 @@ void Command::parse(std::string toParse){
           PipeLine.at(i)->execute(0,1);
         }
       }
+      
     }
    
     // handles piping completely different -- we will do everything in our Command::parse() function,
