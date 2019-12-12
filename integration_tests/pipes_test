@@ -1,4 +1,6 @@
 cat precedence_tests | tr a-z A-Z
 echo hi | tr A-Z a-z
 ls -l | more
+cat precedence_tests | tr a-z A-Z | head -4 | tail -1
+ls -l | tr A-Z a-z | tr a-z A-Z | head -3
 exit

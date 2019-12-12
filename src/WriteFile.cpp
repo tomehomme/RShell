@@ -21,12 +21,13 @@ WriteFile::WriteFile(){
 
 void WriteFile::parse(string s){}
 
-bool WriteFile::execute(int fdInput,int fdOutput){
+bool WriteFile::execute(int fdIn,int fdOutput){
 	//means, write only, if not created then create, and if there is stuff in the file
 	//then we will write over it. S_IRUSR allows user to read
 	this->fdOutput = open(filename.c_str(),O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR  | S_IRGRP | S_IWGRP | S_IWUSR);
 
-	bool success = left->execute(0,this->fdOutput);
+	return  left->execute(fdIn,this->fdOutput);
+	
 }
 
 void WriteFile::print(){

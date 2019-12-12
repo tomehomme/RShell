@@ -35,12 +35,18 @@ void ReadFile::parse(string s){
 	//left and rights are already parsed
 }
 
-bool ReadFile::execute(int fdInput, int fdOutput){
+bool ReadFile::execute(int fdIn, int fdOut){
 	//fdOutput will be 1, for stdout
 	//create new command to execute the cat, or whatever and the fd number.
 	//open returns a file descriptor. O_RDONLY means open for reading only.
-	this->fdInput = open(filename.c_str(), O_RDONLY);
-	bool success = this->left->execute(this->fdInput, fdOutput);
+	if (fdIn != 0){
+		this->fdInput = fdIn;
+		
+	}
+	else {
+		this->fdInput = open(filename.c_str(), O_RDONLY);
+	}
+	bool success = this->left->execute(this->fdInput, fdOut);
 	//fdOutput is initialized to 1 in constructor.
 	return success;
 	

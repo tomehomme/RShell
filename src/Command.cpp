@@ -104,7 +104,6 @@ void Command::parse(std::string toParse){
     
     for (unsigned i = 0; i < PipeLine.size(); i++){
       if (dynamic_cast <Command*> (PipeLine.at(i))){
-          if (dynamic_cast<Command*> (PipeLine.at(i))){
             numPipes--;
             //means that say it was cat test.txt | tr A-Z a-z, where "tr A-Z a-z" is PipeLine.at(i+1)
             int fds[2]; //need a fds of 2
@@ -124,47 +123,42 @@ void Command::parse(std::string toParse){
             if(i == 0){
               dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = false;
               dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
-              if (!PipeLine.at(i)->execute(0, fds[1])){
-                perror("pipe");
-              }
-            } else if(i != PipeLine.size()-1){
+              PipeLine.at(i)->execute(0, fds[1]);
+            } else if(numPipes!=0){
               dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = true;
               dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
-
-              if (!PipeLine.at(i)->execute(lastInput, fds[1])){
-                perror("pipe");
-              }
-            } else{
+              PipeLine.at(i)->execute(lastInput, fds[1]);
+               } else{
                 dynamic_cast<Command*> (PipeLine.at(i))->hasPrevCmd = true;
                 dynamic_cast<Command*> (PipeLine.at(i))->hasNextCmd = false;
-                if (!PipeLine.at(i)->execute(lastInput, 1)){
-                perror("pipe");
+                PipeLine.at(i)->execute(lastInput, 1);
+                
               }
-            }
+            
                      
             lastOutput = fds[1];
             lastInput = fds[0];
           }  
-        }
        else {
             pipeIndex = i;
        }
          if (numPipes == 0){
-            cout << "finished pipes" << endl;
             canExecute = true;
           } 
         if (canExecute){
           if (dynamic_cast<WriteFile*>(PipeLine.at(pipeIndex))){
             cout << "write" << endl;
             PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 1);
+            close(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1]);
           }
-          if (dynamic_cast<WriteFileAppend*>(PipeLine.at(pipeIndex))){
+          else if (dynamic_cast<WriteFileAppend*>(PipeLine.at(pipeIndex))){
             cout << "write append" << endl;
             PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 1);
+           
           }
-          if (dynamic_cast<ReadFile*>(PipeLine.at(pipeIndex))){
+          else if (dynamic_cast<ReadFile*>(PipeLine.at(pipeIndex))){
             cout << "start read" << endl;
-            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[0], 1);
+            PipeLine.at(pipeIndex)->execute(dynamic_cast<Command*>(PipeLine.at(i-1))->cFds[1], 0);
             cout << "finsih" << endl;
           }
           
@@ -176,7 +170,8 @@ void Command::parse(std::string toParse){
     // and not do anything in execute! so we will set args[0] = NULL (for segfault handling)
     this->args[0] = NULL;
     return;
-  }
+  
+}
     
 
   //no input redirection/output redirection.

@@ -20,11 +20,11 @@ WriteFileAppend::WriteFileAppend(){
 
 void WriteFileAppend::parse(string s){}
 
-bool WriteFileAppend::execute(int fdInput, int fdOutput){
+bool WriteFileAppend::execute(int fdIn, int fdOutput){
 	//means, write only, append, and create if not existing
 	//S_IRUSR allows user to read
 	this->fdOutput = open(filename.c_str(), O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWUSR);
-	bool success = left->execute(0,this->fdOutput);
+	bool success = left->execute(fdIn,this->fdOutput);
 	return success;
 }
 
