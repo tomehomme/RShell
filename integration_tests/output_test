@@ -9,4 +9,10 @@ cat pipes_test | tr A-Z a-z |  tr 0-9 A-Z > newOutputFile2
 cat pipes_test > newOutput
 cat pipes_test | cat output_test  > newOutput
 cat pipes_test >> newOutput
+cat pipes_test | cat output_test  > newOutput || echo false
+cat pipes_test >> newOutput && echo true
+(cat pipes_test | tr A-Z a-z |  tr a-z A-Z >> newOutputFile2)
+(cat pipes_test | tr A-Z a-z |  tr 0-9 A-Z > newOutputFile2)
+(cat pipes_test | tr A-Z a-z |  tr a-z A-Z >> newOutputFile2) && echo true
+(cat pipes_test | tr A-Z a-z |  tr 0-9 A-Z > newOutputFile2) && echo true
 exit
