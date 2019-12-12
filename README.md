@@ -46,8 +46,8 @@ command1 ; command2
 command1 && command2  
 //Will run the second command only if the first fails:
 command1 || command2  
-//Will run the command in the background:
-command1 & 
+//Will pipe command1's output into command2:
+command1 | command2
 ```
 
 ##### Connector order of operations
