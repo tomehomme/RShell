@@ -17,7 +17,7 @@ TEST(OrTest, Execute){
     RBase* left = new Command("echo");
     RBase* right = new Command("ls");
     RBase* test = new Or(left, right);
-    test->execute();
+    test->execute(0,1);
 }
 
 TEST(Or, Print){

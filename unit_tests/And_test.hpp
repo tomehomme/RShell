@@ -18,14 +18,14 @@ TEST(AndTest, Execute){
     RBase* left = new Command("echo hello");
     RBase* right = new Command("ls");
     RBase* test = new And(left, right);
-    test->execute();
+    test->execute(0,1);
 }
 
 TEST(AndTest, FailFirstArg){
     RBase* left = new Command("FAILTHIS");
     RBase* right = new Command("ls");
     RBase* test = new And(left,right);
-    test->execute();
+    test->execute(0,1);
 }
 
 #endif

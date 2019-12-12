@@ -10,8 +10,12 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS}) 
     add_executable(rshell  ./src/rshell.cpp) 
+    ADD_EXECUTABLE(test
+    ./unit_tests/unit_test.cpp)
     target_link_libraries(rshell  ${Boost_LIBRARIES})
-
+    target_link_libraries(test  ${Boost_LIBRARIES})
 endif()
 
+TARGET_LINK_LIBRARIES(test gtest)
+TARGET_COMPILE_DEFINITIONS(test PRIVATE gtest_disable_pthreads=ON)
 target_link_libraries( rshell ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_REGEX_LIBRARY} )

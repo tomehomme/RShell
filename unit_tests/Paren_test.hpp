@@ -13,28 +13,28 @@ TEST(ParenTest, Constructor){
 
 TEST(ParenTest, Execute){
     RBase* test = new Paren(new Command("ls"), nullptr);
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ParenTest, multipleArgs){
   RBase* test = new Paren(new Command("ls -l -a"), nullptr);
-    test->execute();
+    test->execute(0,1);
 }
 
 
 TEST(ParenTest, commentedOut){
   RBase* test = new Paren(new Executer("echo #a"), nullptr);
-    test->execute();
+    test->execute(0,1);
 }
 
 
 TEST(ParenTest, notRealArg){
     RBase* test = new Paren(new Executer("NOTREAL"), nullptr);
-    test->execute();
+    test->execute(0,1);
 }
 
 TEST(ParenTest, parethesis){
     RBase* test = new Paren(new Executer("(echo a && echo b) && echo d"), nullptr);
-    test->execute();
+    test->execute(0,1);
 }
 
 

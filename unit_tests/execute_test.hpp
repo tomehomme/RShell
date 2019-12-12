@@ -7,29 +7,29 @@ TEST(ExecuteTest, Or){
     RBase* left = new Command("echo");
     RBase* right = new Command("ls");
     RBase* test = new Or(left, right);
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, And){
     RBase* left = new Command("echo and");
     RBase* right = new Command("ls -a");
     RBase* test = new And(left, right);
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, Command){
     RBase* test = new Command("echo command");
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, MultipleArgs){
     RBase* test = new Command("ls -a -l");
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, CommentedOut){
      RBase* test = new Command("echo #b");
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, CommentedOut2){
      RBase* test = new Command("#echo b");
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, AndOr){
     RBase* Orleft = new Command("echo");
@@ -37,7 +37,7 @@ TEST(ExecuteTest, AndOr){
     RBase* oR = new Or(Orleft, Orright);
     RBase* left = new Command ("echo left");
     RBase* test = new And(left, oR);
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, OrAnd){
     RBase* andLeft = new Command("echo and");
@@ -45,7 +45,7 @@ TEST(ExecuteTest, OrAnd){
     RBase* and_ = new And(andLeft, andRight);
     RBase* left = new Command ("echo left");
     RBase* test = new Or(left, and_);
-    test->execute();
+    test->execute(0,1);
 }
 TEST(ExecuteTest, AndOrAnd){
      RBase* andLeft = new Command("echo andLeft");
@@ -58,7 +58,7 @@ TEST(ExecuteTest, AndOrAnd){
 
     RBase* AndOrAnd = new And(oR,and_);
 
-    AndOrAnd->execute();
+    AndOrAnd->execute(0,1);
 }
 
 

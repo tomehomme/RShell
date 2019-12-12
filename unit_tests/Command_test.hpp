@@ -14,23 +14,23 @@ TEST(CommandTest, Constructor){
 
 TEST(CommandTest, Execute){
     RBase* test = new Command("ls");
-    test->execute();
+    test->execute(0,1);
 }
 TEST(CommandTest, multipleArgs){
   RBase* test = new Command("ls -l -a");
-    test->execute();
+    test->execute(0,1);
 }
 
 
 TEST(CommandTest, commentedOut){
   RBase* test = new Command("echo #a");
-    test->execute();
+    test->execute(0,1);
 }
 
 
 TEST(CommandTest, notRealArg){
     RBase* test = new Command("NOTREAL");
-    test->execute();
+    test->execute(0,1);
 
 }
 
