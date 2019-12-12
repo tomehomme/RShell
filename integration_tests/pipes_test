@@ -1,0 +1,4 @@
+cat precedence_tests | tr a-z A-Z
+echo hi | tr A-Z a-z
+ls -l | more
+exit
