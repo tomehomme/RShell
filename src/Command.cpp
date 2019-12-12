@@ -47,18 +47,18 @@ void Command::parse(std::string toParse){
   vector<string> splitPipe;
   vector<string> splitOutput;
   if(strippedquotes.find("|") != string::npos){
-  boost::algorithm::split_regex(splitPipe, toParse, boost::regex("( \\| )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+  boost::algorithm::split_regex(splitPipe, toParse, boost::regex("(\\|)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
    for(string tempSplitPipe : splitPipe){
     string strippedTemp = boost::regex_replace(tempSplitPipe,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
-     if(strippedTemp.find(" > ") != string::npos){
+     if(strippedTemp.find(">") != string::npos){
       //push correct file output connector with filename 
-      boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( > )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+      boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("(>)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
       PipeLine.push_back(new Command(splitOutput.at(0),1,splitOutput.at(1)));
-     } else if(strippedTemp.find(" >> ") != string::npos){
-        boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( >> )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+     } else if(strippedTemp.find(">>") != string::npos){
+        boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("(>>)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
       PipeLine.push_back(new Command(splitOutput.at(0),2,splitOutput.at(1)));
-     } else if (strippedTemp.find(" < ")!= string::npos){
-        boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("( < )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+     } else if (strippedTemp.find("<")!= string::npos){
+        boost::algorithm::split_regex(splitOutput, tempSplitPipe, boost::regex("(<)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
       PipeLine.push_back(new Command(splitOutput.at(0),3,splitOutput.at(1)));
      }
      else{
@@ -72,13 +72,13 @@ void Command::parse(std::string toParse){
       string strippedTemp = boost::regex_replace(toParse,   boost::regex {"([^\\\\]\").*([^\\\\]\")"}, "");
      if(strippedTemp.find(" > ") != string::npos){
       //push correct file output connector with filename 
-      boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( > )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+      boost::algorithm::split_regex(splitOutput, toParse, boost::regex("(>)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
       PipeLine.push_back(new Command(splitOutput.at(0),1,splitOutput.at(1)));
      } else if(strippedTemp.find(" >> ") != string::npos){
-        boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( >> )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+        boost::algorithm::split_regex(splitOutput, toParse, boost::regex("(>>)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
         PipeLine.push_back(new Command(splitOutput.at(0),2,splitOutput.at(1)));
      } else if (strippedTemp.find(" < ")!= string::npos){
-        boost::algorithm::split_regex(splitOutput, toParse, boost::regex("( < )(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
+        boost::algorithm::split_regex(splitOutput, toParse, boost::regex("(<)(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)") ) ;
         PipeLine.push_back(new Command(splitOutput.at(0),3,splitOutput.at(1)));
      }
 
